@@ -935,6 +935,29 @@ const spellDamage = (damage) => {
   const match = damage.match(/^(.+?)\s+([^\s]+)$/);
   return { amount: match?.[1] || damage, type: match?.[2] || "efeito" };
 };
+const englishSchoolNames = {
+  Abjuration: "Abjuração",
+  Conjuration: "Conjuração",
+  Divination: "Adivinhação",
+  Enchantment: "Encantamento",
+  Evocation: "Evocação",
+  Illusion: "Ilusão",
+  Necromancy: "Necromancia",
+  Transmutation: "Transmutação",
+};
+const apiSpell = (spell) => ({
+  name: spell.name,
+  level: spell.level,
+  school: englishSchoolNames[spell.school?.name] || spell.school?.name || "Magia",
+  damage: spell.damage
+    ? `${spell.damage.damage_at_slot_level?.[String(spell.level)] || spell.damage.damage_at_character_level?.["1"] || "variável"} ${spell.damage.damage_type?.name?.toLowerCase() || "mágico"}`
+    : "—",
+  detail: spell.desc?.[0] || "Uma magia descrita nas regras da 5e 2014.",
+  range: spell.range,
+  castingTime: spell.casting_time,
+  components: spell.components?.join(", "),
+  duration: spell.duration,
+});
 const mainAttribute = (main = "") =>
   main.includes("Força") ? "forca" : main.includes("Destreza") ? "destreza" : main.includes("Constituição") ? "constituicao" : main.includes("Inteligência") ? "inteligencia" : main.includes("Sabedoria") ? "sabedoria" : "carisma";
 const proficiencyBonus = (level) => 2 + Math.floor((level - 1) / 4);
@@ -983,6 +1006,33 @@ const featSlots = (character) =>
   (character.classId === "guerreiro" && character.level >= 6 ? 1 : 0) +
   (character.classId === "guerreiro" && character.level >= 14 ? 1 : 0);
 const fullCasterClasses = ["bardo", "clerigo", "druida", "feiticeiro", "mago", "bruxo"];
+const spellKnownProgression = {
+  bardo: [4, 5, 6, 8, 8, 10, 10, 11, 12, 14, 15, 15, 16, 18, 19, 19, 20, 22, 22, 22],
+  feiticeiro: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15, 15],
+  bruxo: [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+  patrulheiro: [0, 0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11],
+};
+const cantripProgression = {
+  bardo: [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+  clerigo: [3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5],
+  druida: [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+  feiticeiro: [4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+  mago: [3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5],
+  bruxo: [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+  patrulheiro: [0, 0, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+};
+const spellSelectionLimits = (character) => {
+  const level = Math.max(1, Math.min(20, character.level));
+  const classId = character.classId;
+  const spellcastingAbility = classId === "mago" ? "inteligencia" : ["clerigo", "druida", "patrulheiro"].includes(classId) ? "sabedoria" : "carisma";
+  const abilityModifier = modifier((character.attrs?.[spellcastingAbility] || 8) + (racialBonuses[character.race]?.[spellcastingAbility] || 0));
+  let spells;
+  if (spellKnownProgression[classId]) spells = spellKnownProgression[classId][level - 1];
+  else if (classId === "mago") spells = 6 + (level - 1) * 2;
+  else if (classId === "paladino") spells = Math.max(1, abilityModifier + Math.ceil(level / 2));
+  else spells = Math.max(1, abilityModifier + level);
+  return { cantrips: cantripProgression[classId]?.[level - 1] || 0, spells: Math.max(0, spells) };
+};
 const maxSpellLevel = (classId, level) => {
   if (fullCasterClasses.includes(classId)) return Math.min(9, Math.ceil(level / 2));
   if (["paladino", "patrulheiro"].includes(classId)) return Math.max(0, Math.min(5, Math.floor((level + 1) / 4)));
@@ -1033,10 +1083,42 @@ export default function App() {
   });
   const [current, setCurrent] = useState(0);
   const [landing, setLanding] = useState(true);
+  const [spellCatalog, setSpellCatalog] = useState(spells);
   useEffect(
     () => localStorage.setItem("ficha-dnd", JSON.stringify(character)),
     [character],
   );
+  useEffect(() => {
+    let active = true;
+    fetch("https://www.dnd5eapi.co/api/2014/spells")
+      .then((response) => response.json())
+      .then(({ results }) => {
+        if (!active) return;
+        const localByName = new Map(spells.map((spell) => [spell.name.toLowerCase(), spell]));
+        const basic = results.map(({ name, level }) => ({
+          name,
+          level,
+          school: "Magia",
+          damage: "—",
+          detail: "Descrição detalhada carregando...",
+        }));
+        setSpellCatalog(basic.map((spell) => localByName.get(spell.name.toLowerCase()) || spell));
+        return Promise.allSettled(results.map(({ url }) =>
+          fetch(`https://www.dnd5eapi.co${url}`).then((response) => response.json())
+        ));
+      })
+      .then((settled) => {
+        if (!active || !settled) return;
+        const localByName = new Map(spells.map((spell) => [spell.name.toLowerCase(), spell]));
+        const complete = settled
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => apiSpell(result.value))
+          .map((spell) => localByName.get(spell.name.toLowerCase()) || spell);
+        if (complete.length) setSpellCatalog(complete);
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
   const update = (patch) => setCharacter((old) => ({ ...old, ...patch }));
   const selectedClass = classes.find((item) => item.id === character.classId);
   const selectedRace = races.find((item) => item.id === character.race);
@@ -1121,6 +1203,7 @@ export default function App() {
           update={update}
           selectedClass={selectedClass}
           combat={derivedCombat}
+          spellCatalog={spellCatalog}
         />
         <footer className="navigation">
           {currentStepIndex > 0 ? (
@@ -1237,7 +1320,7 @@ function AmbientDecor() {
     </div>
   );
 }
-function StepContent({ step, character, update, selectedClass, combat }) {
+function StepContent({ step, character, update, selectedClass, combat, spellCatalog }) {
   const titles = {
     conceito: [
       "O começo de uma lenda",
@@ -1307,7 +1390,7 @@ function StepContent({ step, character, update, selectedClass, combat }) {
       {step === "raca" && <Race character={character} update={update} />}
       {step === "classe" && <Class character={character} update={update} />}
       {step === "subclasse" && <Subclass character={character} update={update} selectedClass={selectedClass} />}
-      {step === "magias" && <SpellSelection character={character} update={update} selectedClass={selectedClass} />}
+      {step === "magias" && <SpellSelection character={character} update={update} selectedClass={selectedClass} spellCatalog={spellCatalog} />}
       {step === "antecedente" && (
         <Background character={character} update={update} />
       )}
@@ -1333,7 +1416,7 @@ function StepContent({ step, character, update, selectedClass, combat }) {
       )}
       {step === "historia" && <Story character={character} update={update} />}
       {step === "revisao" && (
-        <Review character={character} selectedClass={selectedClass} combat={combat} />
+        <Review character={character} selectedClass={selectedClass} combat={combat} spellCatalog={spellCatalog} />
       )}
     </section>
   );
@@ -1519,33 +1602,37 @@ function Subclass({ character, update, selectedClass }) {
     </div>
   );
 }
-function SpellSelection({ character, update, selectedClass }) {
-  const available = selectedClass?.caster ? spells.filter((spell) => spell.level === 0 || spell.level <= maxSpellLevel(character.classId, character.level)) : [];
+function SpellSelection({ character, update, selectedClass, spellCatalog }) {
+  const available = selectedClass?.caster ? spellCatalog.filter((spell) => spell.level === 0 || spell.level <= maxSpellLevel(character.classId, character.level)) : [];
   const selected = character.spells || [];
+  const limits = spellSelectionLimits(character);
   const toggle = (spell) => {
     const has = selected.includes(spell.name);
-    const limit = spell.level === 0
-      ? Math.min(4, 2 + Math.floor((character.level + 3) / 4))
-      : 2 + Math.floor(character.level / 2);
-    const current = selected.filter((name) => available.find((entry) => entry.name === name)?.level === spell.level);
-    if (!has && current.length >= limit) return;
+    const category = spell.level === 0 ? "cantrips" : "spells";
+    const current = selected.filter((name) => available.find((entry) => entry.name === name)?.level === 0 ? category === "cantrips" : category === "spells");
+    if (!has && current.length >= limits[category]) return;
     update({ spells: has ? selected.filter((name) => name !== spell.name) : [...selected, spell.name] });
   };
   const levels = [...new Set(available.map((spell) => spell.level))].sort((a, b) => a - b);
+  const chosenCantrips = available.filter((spell) => spell.level === 0 && selected.includes(spell.name)).length;
+  const chosenSpells = available.filter((spell) => spell.level > 0 && selected.includes(spell.name)).length;
   return (
     <div className="spell-selection">
       {!selectedClass?.caster && <div className="callout wide">Esta classe não possui magias nesta ficha.</div>}
+      {selectedClass?.caster && (
+        <div className="section-title">
+          <div><span className="eyebrow">Escolha geral</span><h3>Magias e truques selecionados</h3></div>
+          <strong>Truques {chosenCantrips}/{limits.cantrips} · Magias {chosenSpells}/{limits.spells}</strong>
+        </div>
+      )}
       {levels.map((level) => {
         const levelSpells = available.filter((spell) => spell.level === level);
-        const limit = level === 0
-          ? Math.min(4, 2 + Math.floor((character.level + 3) / 4))
-          : 2 + Math.floor(character.level / 2);
-        const chosenCount = levelSpells.filter((spell) => selected.includes(spell.name)).length;
+        const levelChosenCount = levelSpells.filter((spell) => selected.includes(spell.name)).length;
         return (
           <section className="spell-level" key={level}>
             <div className="section-title">
               <div><span className="eyebrow">{level === 0 ? "Cantrip" : `Círculo ${level}`}</span><h3>{level === 0 ? "Truques" : `Magias de nível ${level}`}</h3></div>
-              <strong>{chosenCount}/{limit}</strong>
+              <strong>{levelChosenCount} escolhida{levelChosenCount === 1 ? "" : "s"}</strong>
             </div>
             <div className="cards-grid feat-grid">
               {levelSpells.map((spell) => {
@@ -2079,7 +2166,7 @@ function SheetBox({ title, children, className = "" }) {
     </section>
   );
 }
-function Review({ character, selectedClass, combat }) {
+function Review({ character, selectedClass, combat, spellCatalog }) {
   const race = races.find((item) => item.id === character.race);
   const background = backgrounds.find(
     (item) => item.id === character.background,
@@ -2292,7 +2379,7 @@ function Review({ character, selectedClass, combat }) {
               className="spell-box"
             >
               <div className="spell-lines">
-                {spells
+                {spellCatalog
                   .filter((spell) => spell.level === level && (character.spells || []).includes(spell.name))
                   .map((spell) => (
                     <article className="spell-entry" key={spell.name}>
