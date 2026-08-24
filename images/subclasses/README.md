@@ -1,6 +1,6 @@
 # Fotos das subclasses
 
-Adicione as fotos nesta pasta usando exatamente o nome gerado no campo `image` de cada registro em `src/App.jsx`.
+As fotos atuais foram geradas a partir do banco público Picsum e já estão nesta pasta. Para substituir uma delas, mantenha exatamente o nome do arquivo usado no campo `image` de cada registro em `src/App.jsx`.
 
 Exemplos:
 
