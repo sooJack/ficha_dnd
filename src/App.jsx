@@ -323,6 +323,15 @@ const additionalRaces = [
 races.push(...additionalRaces);
 const classes = [
   [
+    "artifice",
+    "Artífice",
+    8,
+    "Inteligência",
+    2,
+    "Inventor e artesão mágico que transforma ferramentas, infusões e engenhocas em soluções para qualquer aventura.",
+    "artesao-da-guilda",
+  ],
+  [
     "barbaro",
     "Bárbaro",
     12,
@@ -497,40 +506,28 @@ const backgroundStartingItems = {
   soldado: ["Dados", "Roupas comuns"], artista: ["Disfarce", "Instrumento musical"],
   orfao: ["Pequena faca", "Lembrança dos pais"],
 };
-const subclasses = {
-  barbaro: ["Caminho do Berserker", "Caminho do Guerreiro Totêmico"], bardo: ["Colégio do Conhecimento", "Colégio da Bravura"],
-  clerigo: ["Domínio da Vida", "Domínio da Luz"], druida: ["Círculo da Terra", "Círculo da Lua"],
-  feiticeiro: ["Linhagem Dracônica", "Magia Selvagem"], guerreiro: ["Mestre de Batalha", "Cavaleiro Arcano"],
-  ladino: ["Trapaceiro Arcano", "Ladrão"], mago: ["Escola de Evocação", "Escola de Abjuração"],
-  monge: ["Mão Aberta", "Sombra"], paladino: ["Juramento de Devoção", "Juramento dos Anciões"],
-  patrulheiro: ["Caçador", "Mestre das Feras"], bruxo: ["Patrono Arquifada", "Patrono Corruptor"],
+const subclassData = {
+  artifice: [["Alquimista", "Especialista em reagentes mágicos e elixires experimentais para curar, proteger ou transformar o grupo."], ["Armeiro", "Transforma uma armadura pesada em uma extensão do próprio corpo, escolhendo o modelo Guardião ou Infiltrador."], ["Artilheiro", "Cria canhões mágicos que disparam energia destrutiva ou protegem aliados com campos de força."], ["Serralheiro de Batalha", "Combina magia e armas enquanto luta ao lado de um Defensor de Aço construído por ele." ]],
+  barbaro: [["Caminho do Furioso", "Sua fúria se torna um frenesi agressivo, capaz de ampliar seus ataques ao custo de exaustão."], ["Caminho do Guerreiro Totêmico", "Você se liga a espíritos animais e escolhe dons do totem, como a resistência do Urso."]],
+  bardo: [["Colégio do Conhecimento", "Domina segredos, perícias e Palavras Cortantes para atrapalhar inimigos e ampliar sua versatilidade."], ["Colégio da Bravura", "Inspira aliados no combate e combina armaduras, armas marciais e música heroica."]],
+  bruxo: [["A Bruxa do Arquifada", "Um patrono feérico concede ilusões, teleporte defensivo, invisibilidade e encantamento."], ["O Corruptor", "Um pacto infernal recompensa a queda de inimigos com vitalidade temporária e poder destrutivo."], ["O Grande Antigo", "Uma entidade cósmica desperta talentos mentais e comunicação telepática."]],
+  clerigo: [["Domínio do Conhecimento", "A fé em deuses da erudição concede idiomas, perícias e recursos para descobrir segredos."], ["Domínio da Vida", "Aprimora curas e canaliza energia divina para manter aliados vivos."], ["Domínio da Luz", "Usa luz e fogo sagrado para revelar ameaças e punir inimigos."], ["Domínio da Natureza", "Recebe dons druídicos e influência sobre animais e plantas."], ["Domínio da Tempestade", "Controla trovão e relâmpago, maximizando o dano de descargas divinas."], ["Domínio da Trapaça", "Cria uma duplicata ilusória e usa engano para reposicionar e confundir o campo."], ["Domínio da Guerra", "Lidera a linha de frente e concede ataques e bônus táticos aos aliados."]],
+  druida: [["Círculo da Terra", "Um bioma escolhido amplia suas magias e permite recuperar energia mágica durante descansos."], ["Círculo da Lua", "Aprimora a Forma Selvagem para assumir feras mais perigosas e lutar na linha de frente."]],
+  feiticeiro: [["Linhagem Dracônica", "Uma herança dracônica fortalece sua defesa, vitalidade e dano do elemento ancestral."], ["Magia Selvagem", "O caos mágico pode provocar surtos imprevisíveis quando você conjura."]],
+  guerreiro: [["Campeão", "Aperfeiçoa o corpo e amplia a chance de acertos críticos com armas."], ["Mestre de Batalha", "Usa Dados de Superioridade para executar manobras táticas durante os ataques."], ["Cavaleiro Arcano", "Combina combate marcial com magias de Abjuração e Evocação."]],
+  ladino: [["Assassino", "Especialista em infiltração e ataques contra inimigos desprevenidos, com críticos devastadores."], ["Larápio", "Usa a Ação Astuta para interagir com objetos e se move com facilidade por telhados e superfícies."], ["Trapaceiro Arcano", "Usa Ilusão, Encantamento e uma Mão de Mago invisível para seus golpes e crimes."]],
+  mago: [["Escola de Abjuração", "Cria barreiras arcanas para absorver dano e proteger o grupo."], ["Escola de Conjuração", "Invoca criaturas e objetos e pode trocar de posição em situações de perigo."], ["Escola de Adivinhação", "Usa Portento para substituir rolagens por resultados guardados no início do dia."], ["Escola de Encantamento", "Controla mentes e redireciona ataques contra alvos próximos."], ["Escola de Evocação", "Molda magias de área para preservar aliados e maximizar sua destruição."], ["Escola de Ilusão", "Altera ilusões e cria duplicatas para enganar sentidos e ataques."], ["Escola de Necromancia", "Manipula energia vital, recupera vida e fortalece lacaios mortos-vivos."], ["Escola de Transmutação", "Altera matéria e cria uma Pedra de Transmutação com benefícios escolhidos."]],
+  monge: [["Caminho da Mão Aberta", "Aprimora a Rajada de Golpes para empurrar, derrubar ou impedir reações."], ["Caminho das Sombras", "Usa ki para conjurar efeitos furtivos e viajar entre áreas de sombra."], ["Caminho dos Quatro Elementos", "Canaliza ki para moldar terra, água, fogo e ar em técnicas de combate."]],
+  paladino: [["Juramento de Devoção", "Um cavaleiro sagrado canaliza honra, luz divina e uma aura contra encantamento."], ["Juramento dos Anciões", "Protege a luz natural e concede resistência a dano de magias aos aliados próximos."], ["Juramento de Vingança", "Foca um inimigo e obtém vantagem persistente para persegui-lo e derrotá-lo."]],
+  patrulheiro: [["Caçador", "Escolhe táticas para punir inimigos feridos ou atacar múltiplos alvos."], ["Mestre das Feras", "Luta em parceria com um companheiro animal treinado e leal."]],
 };
-const subclassDetails = {
-  "Caminho do Berserker": "Sua fúria permite entrar em frenesi e lutar com ferocidade inabalável.",
-  "Caminho do Guerreiro Totêmico": "Você encontra poder espiritual em animais totêmicos e na conexão com a natureza.",
-  "Colégio do Conhecimento": "Versatilidade e palavras cortantes fazem de você um mestre de talentos.",
-  "Colégio da Bravura": "Você inspira coragem e transforma música em força para o combate.",
-  "Domínio da Vida": "Sua fé canaliza energia divina para curar com eficiência e proteger os vivos.",
-  "Domínio da Luz": "A radiância sagrada revela o oculto e incinera inimigos com fogo divino.",
-  "Círculo da Terra": "Você se vincula a um terreno natural e amplia seu repertório de magia druídica.",
-  "Círculo da Lua": "Sua forma selvagem assume aspectos de feras mais poderosas e resistentes.",
-  "Linhagem Dracônica": "Uma ancestralidade dracônica fortalece sua magia, escamas e presença.",
-  "Magia Selvagem": "Sua magia instável pode desencadear efeitos imprevisíveis e extraordinários.",
-  "Mestre de Batalha": "Manobras e dados de superioridade permitem controlar o ritmo de cada combate.",
-  "Cavaleiro Arcano": "Você combina treinamento marcial com uma seleção cuidadosa de magia arcana.",
-  "Trapaceiro Arcano": "Ilusões e encantamentos ampliam a precisão, a furtividade e a astúcia do ladino.",
-  Ladrão: "Mãos ligeiras e mobilidade excepcional fazem de você um especialista em oportunidades.",
-  "Escola de Evocação": "Você molda a energia elemental para proteger aliados e maximizar seu impacto.",
-  "Escola de Abjuração": "Barreiras arcanas e conhecimento defensivo mantêm ameaças afastadas.",
-  "Mão Aberta": "Seu domínio corporal transforma golpes desarmados em controle preciso do adversário.",
-  Sombra: "Você usa ki para desaparecer, atravessar trevas e atacar onde menos esperam.",
-  "Juramento de Devoção": "Seu juramento sustenta uma conduta honrada e canaliza poder sagrado.",
-  "Juramento dos Anciões": "Você protege a luz, a esperança e a vida contra forças que corrompem o mundo.",
-  Caçador: "Você estuda inimigos e escolhe técnicas para punir ameaças específicas.",
-  "Mestre das Feras": "Um companheiro animal luta ao seu lado como parte de uma parceria treinada.",
-  "Patrono Arquifada": "Uma entidade feérica concede magia encantadora, ilusória e caprichosa.",
-  "Patrono Corruptor": "Seu pacto com uma força sombria concede poder ao custo de consequências perigosas.",
-};
+const subclassSlug = (name) => name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const subclasses = Object.fromEntries(Object.entries(subclassData).map(([classId, options]) => [classId, options.map(([name, detail]) => ({
+  name,
+  detail,
+  image: `${import.meta.env.BASE_URL}images/subclasses/${classId}-${subclassSlug(name)}.jpg`,
+}))]));
+const subclassLevels = { artifice: 3, barbaro: 3, bardo: 3, bruxo: 1, clerigo: 1, druida: 2, feiticeiro: 1, guerreiro: 3, ladino: 3, mago: 2, monge: 3, paladino: 3, patrulheiro: 3 };
 const classFeatures = {
   1: "Proficiência +2 · característica inicial da classe", 2: "Nova característica de classe · recurso de combate",
   3: "Escolha de subclasse · característica da subclasse", 4: "Aumento de atributo ou talento",
@@ -1127,7 +1124,7 @@ export default function App() {
   const selectedRace = races.find((item) => item.id === character.race);
   const derivedCombat = deriveCombat(character, selectedClass, selectedRace);
   const availableSteps = steps.filter(([id]) => {
-    if (id === "subclasse") return character.level >= 3 && Boolean(selectedClass);
+    if (id === "subclasse") return character.level >= (subclassLevels[character.classId] || 3) && Boolean(selectedClass);
     if (id === "magias") return Boolean(selectedClass?.caster);
     if (id === "talentos") return featSlots(character) > 0;
     return true;
@@ -1430,7 +1427,7 @@ function Concept({ character, update }) {
     const slots = featSlots({ ...character, level });
     update({
       level,
-      subclass: level >= 3 ? character.subclass : "",
+      subclass: level >= (subclassLevels[character.classId] || 3) ? character.subclass : "",
       feats: (character.feats || []).slice(0, slots),
       spells: (character.spells || []).filter((name) => {
         const spell = spells.find((entry) => entry.name === name);
@@ -1579,25 +1576,32 @@ function Class({ character, update }) {
 }
 function Subclass({ character, update, selectedClass }) {
   const options = subclasses[character.classId] || [];
-  const unlocked = character.level >= 3;
+  const unlockLevel = subclassLevels[character.classId] || 3;
+  const unlocked = character.level >= unlockLevel;
   return (
     <div className="cards-grid">
       {!selectedClass && <div className="callout wide">Escolha uma classe primeiro.</div>}
       {selectedClass && !unlocked && (
-        <div className="callout wide">Subclasses são liberadas no nível 3.</div>
+        <div className="callout wide">Subclasses são liberadas no nível {unlockLevel}.</div>
       )}
-      {options.map((name) => (
+      {options.map((option) => (
         <Card
-          key={name}
-          selected={character.subclass === name}
-          onClick={() => unlocked && update({ subclass: name })}
+          key={option.name}
+          selected={character.subclass === option.name}
+          onClick={() => unlocked && update({ subclass: option.name })}
         >
+          <img
+            className="option-image"
+            src={option.image}
+            alt={`Ilustração de ${option.name}`}
+            onError={(event) => { event.currentTarget.src = `${import.meta.env.BASE_URL}images/folhas.png`; }}
+          />
           <div className="card-body">
             <div className="card-title">
-              <h3>{name}</h3>
-              {character.subclass === name && <Check size={19} />}
+              <h3>{option.name}</h3>
+              {character.subclass === option.name && <Check size={19} />}
             </div>
-            <p>{subclassDetails[name] || `${selectedClass?.name} · especialização disponível a partir do nível 3.`}</p>
+            <p>{option.detail}</p>
             <div className="tags"><span>{unlocked ? "Disponível" : "Bloqueada"}</span></div>
           </div>
         </Card>
