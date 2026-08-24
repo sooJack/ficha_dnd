@@ -1153,15 +1153,15 @@ function Landing({ hasProgress, onNew, onContinue }) {
     <div className="landing">
       <AmbientDecor />
       <div className="landing-scenery" aria-hidden="true">
-        <img className="tower-image" src="/images/torre.png" alt="" />
-        <img className="landing-book" src="/images/livro.png" alt="" />
+        <img className="tower-image" src={`${import.meta.env.BASE_URL}images/torre.png`} alt="" />
+        <img className="landing-book" src={`${import.meta.env.BASE_URL}images/livro.png`} alt="" />
         <div className="cloud cloud-one"><Cloud size={90} /></div>
         <div className="cloud cloud-two"><Cloud size={128} /></div>
-        <img className="tree tree-left" src="/images/arvore.png" alt="" />
-        <img className="tree tree-right" src="/images/arvore.png" alt="" />
+        <img className="tree tree-left" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+        <img className="tree tree-right" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
       </div>
       <div className="landing-mark">
-        <img src="/images/brasao.png" alt="" />
+        <img src={`${import.meta.env.BASE_URL}images/brasao.png`} alt="" />
         <span>5E</span>
       </div>
       <div className="landing-copy">
@@ -1228,12 +1228,12 @@ function Landing({ hasProgress, onNew, onContinue }) {
 function AmbientDecor() {
   return (
     <div className="persistent-decor" aria-hidden="true">
-      <img className="floating-leaf leaf-one" src="/images/folhas.png" alt="" />
-      <img className="floating-leaf leaf-two" src="/images/folhas.png" alt="" />
-      <img className="floating-leaf leaf-three" src="/images/folhas.png" alt="" />
-      <img className="floating-leaf leaf-four" src="/images/folhas.png" alt="" />
-      <img className="floating-leaf leaf-five" src="/images/folhas.png" alt="" />
-      <img className="floating-leaf leaf-six" src="/images/folhas.png" alt="" />
+      <img className="floating-leaf leaf-one" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+      <img className="floating-leaf leaf-two" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+      <img className="floating-leaf leaf-three" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+      <img className="floating-leaf leaf-four" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+      <img className="floating-leaf leaf-five" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
+      <img className="floating-leaf leaf-six" src={`${import.meta.env.BASE_URL}images/folhas.png`} alt="" />
     </div>
   );
 }

@@ -58,4 +58,4 @@ export const entityImageNames = {
 };
 
 export const image = (sourceId, entityId) =>
-  `/images/${entityImageNames[entityId] || sourceId}.jpg`;
+  `${import.meta.env.BASE_URL}images/${entityImageNames[entityId] || sourceId}.jpg`;
