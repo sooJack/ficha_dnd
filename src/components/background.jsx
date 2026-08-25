@@ -1,0 +1,6 @@
+import { Check } from "lucide-react";
+import { Card } from "./ui";
+
+export default function Background({ character, update, backgrounds, formatGold, startingEquipment }) {
+  return <div className="cards-grid">{backgrounds.map((item) => <Card key={item.id} selected={character.background === item.id} onClick={() => update({ background: item.id, gold: character.goldRolled ? character.gold : item.gold, equipment: character.goldRolled ? character.equipment.filter((entry) => !entry.id?.toString().startsWith("starting-")) : [...startingEquipment(character.classId, item.id), ...character.equipment.filter((entry) => !entry.id?.toString().startsWith("starting-"))] })}><img className="option-image" src={item.image} alt={`Exemplo de ${item.name}`} /><div className="card-body"><div className="card-title"><h3>{item.name}</h3>{character.background === item.id && <Check size={19} />}</div><p>{item.text}</p><div className="tags"><span>{item.prof}</span><span>{formatGold(item.gold)}</span></div></div></Card>)}<div className="wide alignments"><h3>Tendência</h3>{["Leal e Bom", "Neutro e Bom", "Caótico e Bom", "Leal e Neutro", "Neutro", "Caótico e Neutro", "Leal e Mau", "Neutro e Mau", "Caótico e Mau"].map((item) => <button className={character.alignment === item ? "chosen" : ""} key={item} onClick={() => update({ alignment: item })}>{item}</button>)}</div></div>;
+}

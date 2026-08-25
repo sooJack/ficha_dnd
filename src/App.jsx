@@ -24,6 +24,14 @@ import {
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { GiLevelThree } from "react-icons/gi";
 import { image } from "./data/imageNames";
+import { classes as classCatalog } from "./data/classes";
+import { subclasses as subclassCatalog, subclassAbilities as abilityCatalog, subclassLevels as subclassLevelData } from "./data/subclasses";
+import ExternalAttributes from "./components/attributes";
+import ExternalBackground from "./components/background";
+import ExternalEquipment from "./components/equipment";
+import ExternalFeats from "./components/feats";
+import ExternalSkills from "./components/skills";
+import ExternalSpells from "./components/spells";
 import "./App.css";
 
 const attributes = [
@@ -321,7 +329,7 @@ const additionalRaces = [
   image: image(photo, id),
 }));
 races.push(...additionalRaces);
-const classes = [
+const _legacyClasses = [
   [
     "artifice",
     "Artífice",
@@ -508,23 +516,25 @@ const backgroundStartingItems = {
 };
 const subclassData = {
   artifice: [["Alquimista", "Especialista em reagentes mágicos e elixires experimentais para curar, proteger ou transformar o grupo."], ["Armeiro", "Transforma uma armadura pesada em uma extensão do próprio corpo, escolhendo o modelo Guardião ou Infiltrador."], ["Artilheiro", "Cria canhões mágicos que disparam energia destrutiva ou protegem aliados com campos de força."], ["Serralheiro de Batalha", "Combina magia e armas enquanto luta ao lado de um Defensor de Aço construído por ele." ]],
-  barbaro: [["Caminho do Furioso", "Sua fúria se torna um frenesi agressivo, capaz de ampliar seus ataques ao custo de exaustão."], ["Caminho do Guerreiro Totêmico", "Você se liga a espíritos animais e escolhe dons do totem, como a resistência do Urso."]],
-  bardo: [["Colégio do Conhecimento", "Domina segredos, perícias e Palavras Cortantes para atrapalhar inimigos e ampliar sua versatilidade."], ["Colégio da Bravura", "Inspira aliados no combate e combina armaduras, armas marciais e música heroica."]],
+  barbaro: [["Caminho do Furioso", "Sua fúria se torna um frenesi agressivo, capaz de ampliar seus ataques ao custo de exaustão."], ["Caminho do Guerreiro Totêmico", "Você se liga a espíritos animais e escolhe dons do totem, como a resistência do Urso."], ["Caminho do Guardião Ancestral", "Espíritos ancestrais protegem seus aliados e desviam a atenção dos inimigos."], ["Caminho do Arauto da Tormenta", "Uma aura elemental acompanha sua fúria e fortalece ou prejudica criaturas próximas."], ["Caminho do Fanático", "Seu fervor concede dano extra e torna mais fácil retornar à luta depois de cair."], ["Caminho da Besta", "Sua forma bestial manifesta garras, presas e cauda para adaptar seus ataques."], ["Caminho da Magia Selvagem", "A fúria desperta efeitos mágicos aleatórios que você aprende a controlar."], ["Caminho do Gigante", "Você canaliza o poder dos gigantes, cresce e arremessa criaturas e objetos."]],
+  bardo: [["Colégio do Conhecimento", "Domina segredos, perícias e Palavras Cortantes para atrapalhar inimigos e ampliar sua versatilidade."], ["Colégio da Bravura", "Inspira aliados no combate e combina armaduras, armas marciais e música heroica."], ["Colégio do Glamour", "A magia feérica envolve sua performance em encanto, majestade e movimento."], ["Colégio das Espadas", "Transforma performances em florescimentos de lâmina e duelos acrobáticos."], ["Colégio dos Sussurros", "Usa medo, segredos e lâminas psíquicas para destruir inimigos por dentro."], ["Colégio da Criação", "A Canção da Criação anima objetos e manifesta matéria útil para o grupo."], ["Colégio da Eloquência", "Sua oratória torna testes sociais confiáveis e enfraquece resistências inimigas."], ["Colégio dos Espíritos", "Histórias de espíritos canalizadas por um foco guiam dano, cura e destinos improváveis."]],
   bruxo: [["A Bruxa do Arquifada", "Um patrono feérico concede ilusões, teleporte defensivo, invisibilidade e encantamento."], ["O Corruptor", "Um pacto infernal recompensa a queda de inimigos com vitalidade temporária e poder destrutivo."], ["O Grande Antigo", "Uma entidade cósmica desperta talentos mentais e comunicação telepática."]],
   clerigo: [["Domínio do Conhecimento", "A fé em deuses da erudição concede idiomas, perícias e recursos para descobrir segredos."], ["Domínio da Vida", "Aprimora curas e canaliza energia divina para manter aliados vivos."], ["Domínio da Luz", "Usa luz e fogo sagrado para revelar ameaças e punir inimigos."], ["Domínio da Natureza", "Recebe dons druídicos e influência sobre animais e plantas."], ["Domínio da Tempestade", "Controla trovão e relâmpago, maximizando o dano de descargas divinas."], ["Domínio da Trapaça", "Cria uma duplicata ilusória e usa engano para reposicionar e confundir o campo."], ["Domínio da Guerra", "Lidera a linha de frente e concede ataques e bônus táticos aos aliados."]],
-  druida: [["Círculo da Terra", "Um bioma escolhido amplia suas magias e permite recuperar energia mágica durante descansos."], ["Círculo da Lua", "Aprimora a Forma Selvagem para assumir feras mais perigosas e lutar na linha de frente."]],
-  feiticeiro: [["Linhagem Dracônica", "Uma herança dracônica fortalece sua defesa, vitalidade e dano do elemento ancestral."], ["Magia Selvagem", "O caos mágico pode provocar surtos imprevisíveis quando você conjura."]],
+  druida: [["Círculo da Terra", "Um bioma escolhido amplia suas magias e permite recuperar energia mágica durante descansos."], ["Círculo da Lua", "Aprimora a Forma Selvagem para assumir feras mais perigosas e lutar na linha de frente."], ["Círculo dos Sonhos", "A magia feérica acelera curas, protege descansos e abre caminhos ocultos."], ["Círculo do Pastor", "Totens e espíritos fortalecem criaturas invocadas e aliados próximos."], ["Círculo dos Esporos", "Fungos e necromancia transformam decomposição em defesa, dano e lacaios."], ["Círculo das Estrelas", "Constelações oferecem cura, dano radiante e previsibilidade durante a concentração."], ["Círculo do Fogo Selvagem", "Um espírito ígneo destrói inimigos e renova aliados no ciclo de destruição e renascimento."]],
+  feiticeiro: [["Linhagem Dracônica", "Uma herança dracônica fortalece sua defesa, vitalidade e dano do elemento ancestral."], ["Magia Selvagem", "O caos mágico pode provocar surtos imprevisíveis quando você conjura."], ["Magia das Sombras", "A escuridão oferece teleporte, resistência e uma forma quase incorpórea."], ["Feitiçaria da Tormenta", "Vento, trovão e relâmpago dão mobilidade e respostas elétricas ao feiticeiro."], ["Alma Divina", "Uma fonte divina amplia sua lista de magias e permite curar e resistir à morte."], ["Mente Aberrante", "Poderes psíquicos permitem telepatia, conjuração silenciosa e metamorfose aberrante."], ["Alma Relógio", "A ordem de Mecanus anula vantagens, protege aliados e estabiliza resultados."], ["Magia Lunar", "Fases lunares alternam magias, custos de metamagia e fenômenos celestiais."]],
   guerreiro: [["Campeão", "Aperfeiçoa o corpo e amplia a chance de acertos críticos com armas."], ["Mestre de Batalha", "Usa Dados de Superioridade para executar manobras táticas durante os ataques."], ["Cavaleiro Arcano", "Combina combate marcial com magias de Abjuração e Evocação."]],
-  ladino: [["Assassino", "Especialista em infiltração e ataques contra inimigos desprevenidos, com críticos devastadores."], ["Larápio", "Usa a Ação Astuta para interagir com objetos e se move com facilidade por telhados e superfícies."], ["Trapaceiro Arcano", "Usa Ilusão, Encantamento e uma Mão de Mago invisível para seus golpes e crimes."]],
+  ladino: [["Assassino", "Especialista em infiltração e ataques contra inimigos desprevenidos, com críticos devastadores."], ["Larápio", "Usa a Ação Astuta para interagir com objetos e se move com facilidade por telhados e superfícies."], ["Trapaceiro Arcano", "Usa Ilusão, Encantamento e uma Mão de Mago invisível para seus golpes e crimes."], ["Swashbuckler", "Um duelista ágil usa carisma, iniciativa e passos fluidos para bater e correr."], ["Inquisidor", "Lê intenções, encontra fraquezas e garante Ataque Furtivo contra alvos estudados."], ["Mestre de Táticas", "Ajuda aliados à distância e redireciona ataques com estratégia e intriga."], ["Fantasma", "Espíritos concedem perícias, dano necrótico e uma forma espectral."], ["Lâmina Psiónica", "Adagas mentais, telepatia e dados psiónicos tornam seus golpes imprevisíveis."], ["Batedor", "Sobrevive na natureza, move-se com agilidade e lidera emboscadas."]],
   mago: [["Escola de Abjuração", "Cria barreiras arcanas para absorver dano e proteger o grupo."], ["Escola de Conjuração", "Invoca criaturas e objetos e pode trocar de posição em situações de perigo."], ["Escola de Adivinhação", "Usa Portento para substituir rolagens por resultados guardados no início do dia."], ["Escola de Encantamento", "Controla mentes e redireciona ataques contra alvos próximos."], ["Escola de Evocação", "Molda magias de área para preservar aliados e maximizar sua destruição."], ["Escola de Ilusão", "Altera ilusões e cria duplicatas para enganar sentidos e ataques."], ["Escola de Necromancia", "Manipula energia vital, recupera vida e fortalece lacaios mortos-vivos."], ["Escola de Transmutação", "Altera matéria e cria uma Pedra de Transmutação com benefícios escolhidos."]],
-  monge: [["Caminho da Mão Aberta", "Aprimora a Rajada de Golpes para empurrar, derrubar ou impedir reações."], ["Caminho das Sombras", "Usa ki para conjurar efeitos furtivos e viajar entre áreas de sombra."], ["Caminho dos Quatro Elementos", "Canaliza ki para moldar terra, água, fogo e ar em técnicas de combate."]],
-  paladino: [["Juramento de Devoção", "Um cavaleiro sagrado canaliza honra, luz divina e uma aura contra encantamento."], ["Juramento dos Anciões", "Protege a luz natural e concede resistência a dano de magias aos aliados próximos."], ["Juramento de Vingança", "Foca um inimigo e obtém vantagem persistente para persegui-lo e derrotá-lo."]],
-  patrulheiro: [["Caçador", "Escolhe táticas para punir inimigos feridos ou atacar múltiplos alvos."], ["Mestre das Feras", "Luta em parceria com um companheiro animal treinado e leal."]],
+  monge: [["Caminho da Mão Aberta", "Aprimora a Rajada de Golpes para empurrar, derrubar ou impedir reações."], ["Caminho das Sombras", "Usa ki para conjurar efeitos furtivos e viajar entre áreas de sombra."], ["Caminho dos Quatro Elementos", "Canaliza ki para moldar terra, água, fogo e ar em técnicas de combate."], ["Caminho do Mestre Bêbado", "Movimentos imprevisíveis permitem desengajar, redirecionar golpes e atacar vários alvos."], ["Caminho do Kensei", "Armas escolhidas tornam-se extensões marciais do corpo e do ki."], ["Caminho da Longa Morte", "Absorve energia vital, espalha medo e recusa-se a morrer."], ["Caminho do Sol Radiante", "Rajadas de ki radiante criam ataques à distância e explosões solares."], ["Caminho da Misericórdia", "Uma máscara canaliza energia vital para curar aliados ou adoecer inimigos."], ["Caminho do Eu Astral", "Braços, rosto e corpo de energia ampliam alcance e defesa."], ["Caminho do Dragão Ascendente", "Golpes, baforadas e auras assumem aspectos de um dragão elemental."]],
+  paladino: [["Juramento de Devoção", "Um cavaleiro sagrado canaliza honra, luz divina e uma aura contra encantamento."], ["Juramento dos Anciões", "Protege a luz natural e concede resistência a dano de magias aos aliados próximos."], ["Juramento de Vingança", "Foca um inimigo e obtém vantagem persistente para persegui-lo e derrotá-lo."], ["Juramento da Conquista", "O medo absoluto paralisa inimigos e mantém a linha de frente sob controle."], ["Juramento da Redenção", "Escudos e sacrifício protegem aliados enquanto a violência é refletida."], ["Juramento da Coroa", "Um defensor da lei prende inimigos por perto e absorve danos do grupo."], ["Juramento da Glória", "Feitos heroicos aumentam velocidade, resistência e o potencial dos aliados."], ["Juramento da Vigilância", "Protege o Plano Material contra ameaças extraplanares e fortalece a iniciativa."], ["Quebrador de Juramento", "Poder necrótico e controle de mortos-vivos substituem votos por ambição."]],
+  patrulheiro: [["Caçador", "Escolhe táticas para punir inimigos feridos ou atacar múltiplos alvos."], ["Mestre das Feras", "Luta em parceria com um companheiro animal treinado e leal."], ["Perseguidor das Sombras", "Emboscadas, visão umbral e mobilidade tornam a primeira rodada letal."], ["Andarilho do Horizonte", "Teleporta-se entre golpes e transforma ataques em energia planar."], ["Caçador de Monstros", "Identifica resistências, sabota conjurações e persegue alvos sobrenaturais."], ["Guardião do Enxame", "Espíritos empurram inimigos, movem você e criam cobertura viva."], ["Andarilho Feérico", "Charme feérico e teletransportes tornam o patrulheiro um guia imprevisível."], ["Guardião de Dragões", "Um Drake elemental cresce até se tornar companheiro e montaria aérea."]],
 };
 const subclassSlug = (name) => name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const _legacySubclassFallbackImages = { artifice: "artesao-da-guilda", barbaro: "barbaro", bardo: "bardo", bruxo: "bruxo", clerigo: "clerigo", druida: "druida", feiticeiro: "feiticeiro", guerreiro: "guerreiro", ladino: "ladino", mago: "mago", monge: "monge", paladino: "paladino", patrulheiro: "patrulheiro" };
 const subclasses = Object.fromEntries(Object.entries(subclassData).map(([classId, options]) => [classId, options.map(([name, detail]) => ({
   name,
   detail,
+  classId,
   image: `${import.meta.env.BASE_URL}images/subclasses/${classId}-${subclassSlug(name)}.jpg`,
 }))]));
 const subclassLevels = { artifice: 3, barbaro: 3, bardo: 3, bruxo: 1, clerigo: 1, druida: 2, feiticeiro: 1, guerreiro: 3, ladino: 3, mago: 2, monge: 3, paladino: 3, patrulheiro: 3 };
@@ -535,6 +545,34 @@ const classFeatures = {
   12: "Aumento de atributo ou talento", 16: "Aumento de atributo ou talento",
   19: "Aumento de atributo ou talento", 20: "Característica final da classe",
 };
+const subclassFeatureNames = {
+  artifice: ["Especialidade do artífice", "Aprimoramento da especialidade", "Recurso avançado da especialidade", "Maestria da especialidade"],
+  barbaro: ["Habilidade do caminho", "Habilidade do caminho", "Habilidade do caminho", "Habilidade do caminho"],
+  bardo: ["Habilidade do colégio", "Habilidade do colégio", "Habilidade do colégio", "Habilidade do colégio"],
+  bruxo: ["Dádiva do patrono", "Dádiva do patrono", "Dádiva do patrono", "Dádiva do patrono"],
+  clerigo: ["Domínio e magias", "Canalizar Divindade", "Aprimoramento do domínio", "Poder maior do domínio"],
+  druida: ["Dons do círculo", "Dons do círculo", "Dons do círculo", "Dons do círculo"],
+  feiticeiro: ["Magia da origem", "Magia da origem", "Magia da origem", "Magia da origem"],
+  guerreiro: ["Habilidade do arquétipo", "Habilidade do arquétipo", "Habilidade do arquétipo", "Habilidade do arquétipo"],
+  ladino: ["Habilidade do arquétipo", "Habilidade do arquétipo", "Habilidade do arquétipo", "Habilidade do arquétipo"],
+  mago: ["Savante e recurso da escola", "Recurso da escola", "Recurso da escola", "Maestria da escola"],
+  monge: ["Técnica do caminho", "Técnica do caminho", "Técnica do caminho", "Técnica do caminho"],
+  paladino: ["Magias e Canalizar Divindade", "Aura do juramento", "Recurso do juramento", "Forma suprema do juramento"],
+  patrulheiro: ["Magias e recurso do arquétipo", "Recurso do arquétipo", "Recurso do arquétipo", "Recurso do arquétipo"],
+};
+const _legacySubclassAbilities = Object.fromEntries(
+  Object.entries(subclasses).map(([classId, options]) => [
+    classId,
+    Object.fromEntries(options.map((option) => [
+      option.name,
+      [subclassLevels[classId], 6, 10, 14].map((level, index) => ({
+        level,
+        name: subclassFeatureNames[classId][index],
+        detail: option.detail,
+      })),
+    ])),
+  ]),
+);
 const backgrounds = [
   [
     "acolito",
@@ -1120,11 +1158,11 @@ export default function App() {
     return () => { active = false; };
   }, []);
   const update = (patch) => setCharacter((old) => ({ ...old, ...patch }));
-  const selectedClass = classes.find((item) => item.id === character.classId);
+  const selectedClass = classCatalog.find((item) => item.id === character.classId);
   const selectedRace = races.find((item) => item.id === character.race);
   const derivedCombat = deriveCombat(character, selectedClass, selectedRace);
   const availableSteps = steps.filter(([id]) => {
-    if (id === "subclasse") return character.level >= (subclassLevels[character.classId] || 3) && Boolean(selectedClass);
+    if (id === "subclasse") return character.level >= (subclassLevelData[character.classId] || 3) && Boolean(selectedClass);
     if (id === "magias") return Boolean(selectedClass?.caster);
     if (id === "talentos") return featSlots(character) > 0;
     return true;
@@ -1390,23 +1428,29 @@ function StepContent({ step, character, update, selectedClass, combat, spellCata
       {step === "raca" && <Race character={character} update={update} />}
       {step === "classe" && <Class character={character} update={update} />}
       {step === "subclasse" && <Subclass character={character} update={update} selectedClass={selectedClass} />}
-      {step === "magias" && <SpellSelection character={character} update={update} selectedClass={selectedClass} spellCatalog={spellCatalog} />}
+      {step === "magias" && <ExternalSpells character={character} update={update} selectedClass={selectedClass} spellCatalog={spellCatalog} maxSpellLevel={maxSpellLevel} spellSelectionLimits={spellSelectionLimits} spellDamage={spellDamage} />}
       {step === "antecedente" && (
-        <Background character={character} update={update} />
+        <ExternalBackground character={character} update={update} backgrounds={backgrounds} formatGold={formatGold} startingEquipment={startingEquipment} />
       )}
       {step === "atributos" && (
-        <Attributes character={character} update={update} />
+        <ExternalAttributes character={character} update={update} attributes={attributes} pointCosts={pointCosts} races={races} modifier={modifier} />
       )}
       {step === "pericias" && (
-        <Skills
+        <ExternalSkills
           character={character}
           update={update}
           selectedClass={selectedClass}
+          skills={skills}
+          classProficiencies={classProficiencies}
+          backgroundSkillIds={backgroundSkillIds}
+          background={backgrounds.find((item) => item.id === character.background)}
+          proficiencyBonus={proficiencyBonus}
+          modifier={modifier}
         />
       )}
-      {step === "talentos" && <Feats character={character} update={update} />}
+      {step === "talentos" && <ExternalFeats character={character} update={update} feats={feats} featSlots={featSlots} />}
       {step === "equipamentos" && (
-        <Equipment character={character} update={update} combat={combat} />
+        <ExternalEquipment character={character} update={update} combat={combat} itemCatalog={itemCatalog} equipmentPacks={equipmentPacks} startingGoldByClass={startingGoldByClass} backgrounds={backgrounds} formatGold={formatGold} goldToCents={goldToCents} centsToGold={centsToGold} />
       )}
       {step === "personalidade" && (
         <Personality character={character} update={update} />
@@ -1427,7 +1471,7 @@ function Concept({ character, update }) {
     const slots = featSlots({ ...character, level });
     update({
       level,
-      subclass: level >= (subclassLevels[character.classId] || 3) ? character.subclass : "",
+      subclass: level >= (subclassLevelData[character.classId] || 3) ? character.subclass : "",
       feats: (character.feats || []).slice(0, slots),
       spells: (character.spells || []).filter((name) => {
         const spell = spells.find((entry) => entry.name === name);
@@ -1533,7 +1577,7 @@ function Race({ character, update }) {
 function Class({ character, update }) {
   return (
     <div className="cards-grid">
-      {classes.map((item) => (
+      {classCatalog.map((item) => (
         <Card
           key={item.id}
           selected={character.classId === item.id}
@@ -1575,9 +1619,10 @@ function Class({ character, update }) {
   );
 }
 function Subclass({ character, update, selectedClass }) {
-  const options = subclasses[character.classId] || [];
-  const unlockLevel = subclassLevels[character.classId] || 3;
+  const options = subclassCatalog[character.classId] || [];
+  const unlockLevel = subclassLevelData[character.classId] || 3;
   const unlocked = character.level >= unlockLevel;
+  const [expanded, setExpanded] = useState(character.subclass || "");
   return (
     <div className="cards-grid">
       {!selectedClass && <div className="callout wide">Escolha uma classe primeiro.</div>}
@@ -1585,31 +1630,49 @@ function Subclass({ character, update, selectedClass }) {
         <div className="callout wide">Subclasses são liberadas no nível {unlockLevel}.</div>
       )}
       {options.map((option) => (
-        <Card
-          key={option.name}
-          selected={character.subclass === option.name}
-          onClick={() => unlocked && update({ subclass: option.name })}
-        >
-          <img
-            className="option-image"
-            src={option.image}
-            alt={`Ilustração de ${option.name}`}
-            onError={(event) => { event.currentTarget.src = `${import.meta.env.BASE_URL}images/folhas.png`; }}
-          />
-          <div className="card-body">
-            <div className="card-title">
-              <h3>{option.name}</h3>
-              {character.subclass === option.name && <Check size={19} />}
+        <div className="subclass-option" key={option.name}>
+          <Card
+            selected={character.subclass === option.name}
+            onClick={() => {
+              if (!unlocked) return;
+              setExpanded(expanded === option.name ? "" : option.name);
+              update({ subclass: option.name });
+            }}
+          >
+            <img
+              className="option-image"
+              src={option.image}
+              alt={`Ilustração de ${option.name}`}
+              onError={(event) => { event.currentTarget.src = `${import.meta.env.BASE_URL}images/${option.fallback}.jpg`; }}
+            />
+            <div className="card-body">
+              <div className="card-title">
+                <h3>{option.name}</h3>
+                {character.subclass === option.name && <Check size={19} />}
+              </div>
+              <p>{option.detail}</p>
+              <div className="tags"><span>{unlocked ? "Disponível" : "Bloqueada"}</span><span>{expanded === option.name ? "Ocultar habilidades" : "Ver habilidades"}</span></div>
             </div>
-            <p>{option.detail}</p>
-            <div className="tags"><span>{unlocked ? "Disponível" : "Bloqueada"}</span></div>
-          </div>
-        </Card>
+          </Card>
+          {expanded === option.name && unlocked && (
+            <div className="subclass-abilities">
+              <h4>Habilidades por nível</h4>
+              {(abilityCatalog[character.classId]?.[option.name] || []).map((ability) => (
+                <div className={ability.level <= character.level ? "ability-unlocked" : "ability-locked"} key={`${option.name}-${ability.level}-${ability.name}`}>
+                  <strong>Nível {ability.level}</strong>
+                  <span>{ability.name}</span>
+                  <p>{ability.detail}</p>
+                  <small>{ability.level <= character.level ? "Já ganhou" : "Vai ganhar"}</small>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );
 }
-function SpellSelection({ character, update, selectedClass, spellCatalog }) {
+function _LegacySpellSelection({ character, update, selectedClass, spellCatalog }) {
   const available = selectedClass?.caster ? spellCatalog.filter((spell) => spell.level === 0 || spell.level <= maxSpellLevel(character.classId, character.level)) : [];
   const selected = character.spells || [];
   const limits = spellSelectionLimits(character);
@@ -1663,7 +1726,7 @@ function SpellSelection({ character, update, selectedClass, spellCatalog }) {
     </div>
   );
 }
-function Background({ character, update }) {
+function _LegacyBackground({ character, update }) {
   return (
     <div className="cards-grid">
       {backgrounds.map((item) => (
@@ -1726,7 +1789,7 @@ function Background({ character, update }) {
     </div>
   );
 }
-function Attributes({ character, update }) {
+function _LegacyAttributes({ character, update }) {
   const spent = Object.values(character.attrs).reduce(
     (sum, value) => sum + (pointCosts[value] ?? 0),
     0,
@@ -1812,7 +1875,7 @@ function Attributes({ character, update }) {
     </>
   );
 }
-function Skills({ character, update, selectedClass }) {
+function _LegacySkills({ character, update, selectedClass }) {
   const prof = (key) => Boolean(character.skills[key]);
   const max = selectedClass?.skills || 0;
   const classGranted = classProficiencies[character.classId] || [];
@@ -1868,7 +1931,7 @@ function Skills({ character, update, selectedClass }) {
     </div>
   );
 }
-function Feats({ character, update }) {
+function _LegacyFeats({ character, update }) {
   const slots = featSlots(character);
   const selectedNames = character.feats.map((feat) =>
     typeof feat === "string" ? feat : feat.name,
@@ -1932,7 +1995,7 @@ function Feats({ character, update }) {
     </>
   );
 }
-function Equipment({ character, update, combat }) {
+function LegacyEquipment({ character, update, combat }) {
   const [category, setCategory] = useState("Todos");
   const selectedBackground = backgrounds.find((item) => item.id === character.background);
   const goldRule = startingGoldByClass[character.classId];
@@ -2073,6 +2136,7 @@ function Equipment({ character, update, combat }) {
     </div>
   );
 }
+const _legacyEquipmentReference = LegacyEquipment;
 function Personality({ character, update }) {
   return (
     <div className="form-grid">
@@ -2173,6 +2237,44 @@ function SheetBox({ title, children, className = "" }) {
     </section>
   );
 }
+function Abilities({ character, selectedClass }) {
+  const selectedSubclass = subclassCatalog[character.classId]?.find((item) => item.name === character.subclass);
+  const subclassRows = abilityCatalog[character.classId]?.[character.subclass] || [];
+  const classRows = Object.entries(classFeatures).map(([level, detail]) => ({
+    level: Number(level),
+    name: "Classe",
+    detail,
+  }));
+  const rows = [...classRows, ...subclassRows].sort((first, second) => first.level - second.level);
+  return (
+    <section className="abilities-panel">
+      <div className="section-title">
+        <div><span className="eyebrow">Progressão</span><h3>Habilidades</h3></div>
+        <strong>Nível {character.level}</strong>
+      </div>
+      {!selectedClass || !selectedSubclass ? (
+        <div className="callout wide">Escolha uma classe e uma subclasse para ver as habilidades da ficha.</div>
+      ) : (
+        <>
+          <div className="ability-identity">
+            <img src={selectedSubclass.image} alt={`Ilustração de ${selectedSubclass.name}`} onError={(event) => { event.currentTarget.src = `${import.meta.env.BASE_URL}images/${selectedSubclass.fallback}.jpg`; }} />
+            <div><strong>{selectedClass.name} · {selectedSubclass.name}</strong><p>{selectedSubclass.detail}</p></div>
+          </div>
+          <div className="ability-list">
+            {rows.map((ability, index) => {
+              const active = ability.level <= character.level;
+              return <article className={`ability-item ${active ? "active" : "future"}`} key={`${ability.level}-${ability.name}-${index}`}>
+                <span className="ability-level">Nível {ability.level}</span>
+                <div><strong>{ability.name}</strong><p>{ability.detail}</p></div>
+                <small>{active ? "Ativa" : "Próxima"}</small>
+              </article>;
+            })}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
 function Review({ character, selectedClass, combat, spellCatalog }) {
   const race = races.find((item) => item.id === character.race);
   const background = backgrounds.find(
@@ -2207,6 +2309,7 @@ function Review({ character, selectedClass, combat, spellCatalog }) {
   const spellLevels = [0, 1, 2];
   return (
     <div className="sheet-preview-frame">
+      <Abilities character={character} selectedClass={selectedClass} />
       <div className="sheet-preview">
       <div className="sheet-page sheet-page-one">
         <header className="sheet-banner">
