@@ -131,6 +131,12 @@ h1 em {
   padding: 0 12px 30px;
   border-bottom: 1px solid var(--line);
 }
+.brand img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  flex: none;
+}
 .brand strong,
 .brand small {
   display: block;

@@ -1158,9 +1158,9 @@ export default function App() {
       <AmbientDecor />
       <aside className="sidebar">
         <div className="brand">
-          <Shield size={22} />
+          <img src="/brasao.png" alt="Brasão de Dungeons & Dragons" />
           <div>
-            <strong>FICHA D&D</strong>
+            <strong>Dungeons & Dragons</strong>
             <small>Livro do aventureiro</small>
           </div>
         </div>
