@@ -24,7 +24,7 @@ import {
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { GiLevelThree } from "react-icons/gi";
 import { image } from "./data/imageNames";
-import { classes as classCatalog } from "./data/classes";
+import { classes as classCatalog, classProficiencies, classStartingItems, startingGoldByClass } from "./data/classes";
 import { subclasses as subclassCatalog, subclassAbilities as abilityCatalog, subclassLevels as subclassLevelData } from "./data/subclasses";
 import ExternalAttributes from "./components/attributes";
 import ExternalBackground from "./components/background";
@@ -32,6 +32,9 @@ import ExternalEquipment from "./components/equipment";
 import ExternalFeats from "./components/feats";
 import ExternalSkills from "./components/skills";
 import ExternalSpells from "./components/spells";
+import ClassSelection from "./components/class-selection";
+import SubclassSelection from "./components/subclass-selection";
+import { Card, StepButton } from "./components/ui";
 import "./App.css";
 
 const attributes = [
@@ -480,31 +483,6 @@ const _legacyClasses = [
     bruxo: "Conjurador",
   }[id],
 }));
-const classProficiencies = {
-  barbaro: ["atletismo", "sobrevivencia"], bardo: ["atuacao", "persuasao"],
-  clerigo: ["religiao", "medicina"], druida: ["natureza", "lidarAnimais"],
-  feiticeiro: ["arcanismo"], guerreiro: ["atletismo", "intimidacao"],
-  ladino: ["furtividade", "blefar"], mago: ["arcanismo", "historia"],
-  monge: ["acrobacia", "religiao"], paladino: ["religiao", "atletismo"],
-  patrulheiro: ["sobrevivencia", "percepcao"], bruxo: ["arcanismo", "intimidacao"],
-};
-const classStartingItems = {
-  barbaro: ["Machado de batalha", "Machadinha", "Mochila"], bardo: ["Espada curta", "Instrumento musical", "Couro"],
-  clerigo: ["Maça", "Escudo", "Símbolo sagrado"], druida: ["Escudo", "Foco druídico", "Couro"],
-  feiticeiro: ["Adaga", "Foco arcano", "Mochila"], guerreiro: ["Espada longa", "Escudo", "Cota de malha"],
-  ladino: ["Adaga", "Ferramentas de ladrão", "Couro"], mago: ["Adaga", "Foco arcano", "Livro"],
-  monge: ["Espada curta", "Mochila", "Rações (1 dia)"], paladino: ["Espada longa", "Escudo", "Símbolo sagrado"],
-  patrulheiro: ["Arco longo", "Espada curta", "Couro"], bruxo: ["Adaga", "Foco arcano", "Couro"],
-};
-const startingGoldByClass = {
-  artifice: { dice: 4, multiplier: 10 }, barbaro: { dice: 2, multiplier: 10 },
-  bardo: { dice: 5, multiplier: 10 }, bruxo: { dice: 4, multiplier: 10 },
-  clerigo: { dice: 5, multiplier: 10 }, druida: { dice: 2, multiplier: 10 },
-  feiticeiro: { dice: 3, multiplier: 10 }, guerreiro: { dice: 5, multiplier: 10 },
-  ladino: { dice: 4, multiplier: 10 }, mago: { dice: 4, multiplier: 10 },
-  monge: { dice: 5, multiplier: 1 }, paladino: { dice: 5, multiplier: 10 },
-  patrulheiro: { dice: 5, multiplier: 10 },
-};
 const backgroundStartingItems = {
   acolito: ["Símbolo sagrado", "Livro"], artesao: ["Ferramentas de artesão", "Roupas de viajante"],
   charlatao: ["Roupas finas", "Kit de disfarce"], criminoso: ["Ferramentas de ladrão", "Pé de cabra"],
@@ -1076,24 +1054,7 @@ const maxSpellLevel = (classId, level) => {
   if (["paladino", "patrulheiro"].includes(classId)) return Math.max(0, Math.min(5, Math.floor((level + 1) / 4)));
   return 0;
 };
-function Button({ children, variant = "secondary", icon: Icon, ...props }) {
-  return (
-    <button className={`button ${variant}`} {...props}>
-      {Icon && <Icon size={16} />}
-      {children}
-    </button>
-  );
-}
-function Card({ children, selected, onClick }) {
-  return (
-    <article
-      className={`card ${selected ? "selected" : ""} ${onClick ? "clickable" : ""}`}
-      onClick={onClick}
-    >
-      {children}
-    </article>
-  );
-}
+const Button = StepButton;
 function Field({ label, value = "", onChange, ...props }) {
   return (
     <label className="field">
@@ -1426,8 +1387,8 @@ function StepContent({ step, character, update, selectedClass, combat, spellCata
       </div>
       {step === "conceito" && <Concept character={character} update={update} />}
       {step === "raca" && <Race character={character} update={update} />}
-      {step === "classe" && <Class character={character} update={update} />}
-      {step === "subclasse" && <Subclass character={character} update={update} selectedClass={selectedClass} />}
+      {step === "classe" && <ClassSelection character={character} update={update} classCatalog={classCatalog} startingEquipment={startingEquipment} />}
+      {step === "subclasse" && <SubclassSelection character={character} update={update} selectedClass={selectedClass} subclassCatalog={subclassCatalog} subclassLevelData={subclassLevelData} abilityCatalog={abilityCatalog} />}
       {step === "magias" && <ExternalSpells character={character} update={update} selectedClass={selectedClass} spellCatalog={spellCatalog} maxSpellLevel={maxSpellLevel} spellSelectionLimits={spellSelectionLimits} spellDamage={spellDamage} />}
       {step === "antecedente" && (
         <ExternalBackground character={character} update={update} backgrounds={backgrounds} formatGold={formatGold} startingEquipment={startingEquipment} />
@@ -1571,104 +1532,6 @@ function Race({ character, update }) {
           </label>
         </div>
       )}
-    </div>
-  );
-}
-function Class({ character, update }) {
-  return (
-    <div className="cards-grid">
-      {classCatalog.map((item) => (
-        <Card
-          key={item.id}
-          selected={character.classId === item.id}
-          onClick={() =>
-            update({
-              classId: item.id,
-              subclass: "",
-              spells: [],
-              equipment: character.goldRolled
-                ? (character.equipment || []).filter((entry) => !entry.id?.toString().startsWith("starting-"))
-                : [
-                    ...startingEquipment(item.id, character.background),
-                    ...(character.equipment || []).filter((entry) => !entry.id?.toString().startsWith("starting-")),
-                  ],
-            })
-          }
-        >
-          <img
-            className="option-image"
-            src={item.image}
-            alt={`Ilustração de ${item.name}`}
-          />
-          <div className="card-body">
-            <div className="card-title">
-              <h3>{item.name}</h3>
-              {character.classId === item.id && <Check size={19} />}
-            </div>
-            <p>{item.text}</p>
-            <div className="tags">
-              <span>{item.category}</span>
-              <span>d{item.die} de vida</span>
-              <span>{item.main}</span>
-              {item.caster && <span className="gold">Conjurador</span>}
-            </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
-}
-function Subclass({ character, update, selectedClass }) {
-  const options = subclassCatalog[character.classId] || [];
-  const unlockLevel = subclassLevelData[character.classId] || 3;
-  const unlocked = character.level >= unlockLevel;
-  const [expanded, setExpanded] = useState(character.subclass || "");
-  return (
-    <div className="cards-grid">
-      {!selectedClass && <div className="callout wide">Escolha uma classe primeiro.</div>}
-      {selectedClass && !unlocked && (
-        <div className="callout wide">Subclasses são liberadas no nível {unlockLevel}.</div>
-      )}
-      {options.map((option) => (
-        <div className="subclass-option" key={option.name}>
-          <Card
-            selected={character.subclass === option.name}
-            onClick={() => {
-              if (!unlocked) return;
-              setExpanded(expanded === option.name ? "" : option.name);
-              update({ subclass: option.name });
-            }}
-          >
-            <img
-              className="option-image"
-              src={option.image}
-              alt={`Ilustração de ${option.name}`}
-              onError={(event) => { event.currentTarget.src = `${import.meta.env.BASE_URL}images/${option.fallback}.jpg`; }}
-            />
-            <div className="card-body">
-              <div className="card-title">
-                <h3>{option.name}</h3>
-                {character.subclass === option.name && <Check size={19} />}
-              </div>
-              <p>{option.detail}</p>
-              <div className="tags"><span>{unlocked ? "Disponível" : "Bloqueada"}</span><span>{expanded === option.name ? "Ocultar habilidades" : "Ver habilidades"}</span></div>
-            </div>
-          </Card>
-          {expanded === option.name && unlocked && (
-            <div className="subclass-abilities">
-              <h4>Habilidades por nível</h4>
-              {(abilityCatalog[character.classId]?.[option.name] || []).map((ability) => (
-                <div className={ability.level <= character.level ? "ability-unlocked" : "ability-locked"} key={`${option.name}-${ability.level}-${ability.name}`}>
-                  <strong>Nível {ability.level}</strong>
-                  <span>{ability.name}</span>
-                  <p>{ability.detail}</p>
-                  <small>{ability.level <= character.level ? "Já ganhou" : "Vai ganhar"}</small>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
     </div>
   );
 }

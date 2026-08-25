@@ -22,3 +22,29 @@ const categories = { artifice: "Especialista", barbaro: "Combatente", bardo: "Co
 export const classes = classRows.map(([id, name, die, main, skills, text, photo]) => ({
   id, name, die, main, skills, text, image: image(photo, id), caster: casterClasses.includes(id), category: categories[id],
 }));
+
+export const classProficiencies = {
+  barbaro: ["atletismo", "sobrevivencia"], bardo: ["atuacao", "persuasao"],
+  clerigo: ["religiao", "medicina"], druida: ["natureza", "lidarAnimais"],
+  feiticeiro: ["arcanismo"], guerreiro: ["atletismo", "intimidacao"],
+  ladino: ["furtividade", "blefar"], mago: ["arcanismo", "historia"],
+  monge: ["acrobacia", "religiao"], paladino: ["religiao", "atletismo"],
+  patrulheiro: ["sobrevivencia", "percepcao"], bruxo: ["arcanismo", "intimidacao"],
+};
+
+export const classStartingItems = {
+  barbaro: ["Machado de batalha", "Machadinha", "Mochila"], bardo: ["Espada curta", "Instrumento musical", "Couro"],
+  clerigo: ["Maça", "Escudo", "Símbolo sagrado"], druida: ["Escudo", "Foco druídico", "Couro"],
+  feiticeiro: ["Adaga", "Foco arcano", "Mochila"], guerreiro: ["Espada longa", "Escudo", "Cota de malha"],
+  ladino: ["Adaga", "Ferramentas de ladrão", "Couro"], mago: ["Adaga", "Foco arcano", "Livro"],
+  monge: ["Espada curta", "Mochila", "Rações (1 dia)"], paladino: ["Espada longa", "Escudo", "Símbolo sagrado"],
+  patrulheiro: ["Arco longo", "Espada curta", "Couro"], bruxo: ["Adaga", "Foco arcano", "Couro"],
+};
+
+export const startingGoldByClass = {
+  artifice: { dice: 4, multiplier: 10 }, barbaro: { dice: 2, multiplier: 10 }, bardo: { dice: 5, multiplier: 10 },
+  bruxo: { dice: 4, multiplier: 10 }, clerigo: { dice: 5, multiplier: 10 }, druida: { dice: 2, multiplier: 10 },
+  feiticeiro: { dice: 3, multiplier: 10 }, guerreiro: { dice: 5, multiplier: 10 }, ladino: { dice: 4, multiplier: 10 },
+  mago: { dice: 4, multiplier: 10 }, monge: { dice: 5, multiplier: 1 }, paladino: { dice: 5, multiplier: 10 },
+  patrulheiro: { dice: 5, multiplier: 10 },
+};
