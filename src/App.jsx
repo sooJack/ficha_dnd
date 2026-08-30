@@ -12,6 +12,7 @@ import {
   Eye,
   Heart,
   History,
+  Languages,
   Plus,
   ScrollText,
   Shield,
@@ -24,6 +25,7 @@ import {
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { GiLevelThree } from "react-icons/gi";
 import { image } from "./data/imageNames";
+import { spells as spellData } from "./data/spells";
 import { classes as classCatalog, classProficiencies, classStartingItems, startingGoldByClass } from "./data/classes";
 import { subclasses as subclassCatalog, subclassAbilities as abilityCatalog, subclassLevels as subclassLevelData } from "./data/subclasses";
 import ExternalAttributes from "./components/attributes";
@@ -736,24 +738,122 @@ const feats = [
   ],
 ].map(([name, text, category]) => ({ name, text, category }));
 const itemCatalog = [
-  ["Adaga", 2, "Armas"], ["Arco curto", 25, "Armas"], ["Arco longo", 50, "Armas"],
-  ["Besta leve", 25, "Armas"], ["Besta pesada", 50, "Armas"], ["Espada curta", 10, "Armas"],
-  ["Espada longa", 15, "Armas"], ["Machado de batalha", 10, "Armas"], ["Machadinha", 5, "Armas"],
-  ["Maça", 5, "Armas"], ["Martelo de guerra", 15, "Armas"], ["Lança", 1, "Armas"],
-  ["Cajado", 5, "Armas"], ["Cota de malha", 75, "Armaduras"], ["Couro", 10, "Armaduras"],
-  ["Escudo", 10, "Armaduras"], ["Mochila", 2, "Diversos"], ["Corda de cânhamo (15 m)", 1, "Diversos"],
-  ["Tocha", 0.01, "Diversos"], ["Pederneira", 0.5, "Diversos"], ["Rações (1 dia)", 0.5, "Diversos"],
-  ["Cantil", 0.2, "Diversos"], ["Kit de curandeiro", 5, "Diversos"], ["Livro", 25, "Diversos"],
-  ["Símbolo sagrado", 5, "Diversos"], ["Foco arcano", 10, "Diversos"], ["Foco druídico", 5, "Diversos"],
-  ["Instrumento musical", 2, "Diversos"], ["Ferramentas de artesão", 10, "Diversos"],
-  ["Roupas de viajante", 2, "Diversos"], ["Roupas comuns", 0.5, "Diversos"], ["Roupas finas", 15, "Diversos"],
-  ["Kit de disfarce", 25, "Diversos"], ["Pé de cabra", 2, "Diversos"], ["Kit de herbalismo", 5, "Diversos"],
-  ["Cobertor", 0.5, "Diversos"], ["Armadilha de caça", 5, "Diversos"], ["Pá", 2, "Diversos"],
-  ["Anel de sinete", 5, "Diversos"], ["Tinta e pena", 10, "Diversos"], ["Dados", 0.1, "Diversos"],
-  ["Disfarce", 1, "Diversos"], ["Pequena faca", 0.2, "Diversos"], ["Lembrança dos pais", 0, "Diversos"],
-  ["Ferramentas de ladrão", 25, "Diversos"], ["Kit de escalada", 25, "Kits e Pacotes"],
-  ["Kit de primeiros socorros", 5, "Kits e Pacotes"],
-].map(([name, price, category]) => ({ name, price, category }));
+  // ARMADURAS LEVES
+  { name: "Armadura Acolchoada", price: 5, category: "Armaduras", description: "Roupas acolchoadas com camadas de algodão ou lã.", damage: "—", ac: 11 },
+  { name: "Armadura de Couro", price: 10, category: "Armaduras", description: "Couro que cobre o corpo, flexível e confortável.", damage: "—", ac: 11 },
+  { name: "Armadura de Couro Batido", price: 45, category: "Armaduras", description: "Couro trabalhado com acertos de metal, mais resistente.", damage: "—", ac: 12 },
+  // ARMADURAS MÉDIAS
+  { name: "Gibão de Peles", price: 10, category: "Armaduras", description: "Gibão de couro e pelo de animal, oferece boa proteção.", damage: "—", ac: 12 },
+  { name: "Camisão de Malha", price: 50, category: "Armaduras", description: "Camiseta de elos de metal entrelaçados.", damage: "—", ac: 13 },
+  { name: "Brunea", price: 50, category: "Armaduras", description: "Couro com escamas de metal sobrepostas, muito resistente.", damage: "—", ac: 14 },
+  { name: "Peitoral", price: 400, category: "Armaduras", description: "Placa de metal que cobre o tórax e costas.", damage: "—", ac: 14 },
+  { name: "Meia-Armadura", price: 750, category: "Armaduras", description: "Placas de metal acopladas a um gibão acolchoado.", damage: "—", ac: 15 },
+  // ARMADURAS PESADAS
+  { name: "Cota de Anéis", price: 30, category: "Armaduras", description: "Anéis de metal costurados em couro ou pano de linho.", damage: "—", ac: 14 },
+  { name: "Cota de Malha", price: 75, category: "Armaduras", description: "Rede de anéis de metal entrelaçados que protegem bem.", damage: "—", ac: 16 },
+  { name: "Cota de Talas", price: 200, category: "Armaduras", description: "Fitas de metal sobrepostas pregadas a um suporte de couro.", damage: "—", ac: 17 },
+  { name: "Armadura de Placas", price: 1500, category: "Armaduras", description: "Armadura completa de placas de metal unidas, a melhor proteção.", damage: "—", ac: 18 },
+  { name: "Escudo", price: 10, category: "Armaduras", description: "Escudo de madeira e metal que concede +2 na CA.", damage: "—", ac: 2 },
+  
+  // ARMAS SIMPLES - CORPO A CORPO
+  { name: "Adaga", price: 2, category: "Armas", description: "Lâmina curta e afiada, fácil de usar e ocultar.", damage: "1d4", type: "Perfurante" },
+  { name: "Clava", price: 0.1, category: "Armas", description: "Bastão simples, improvável arma de improviso.", damage: "1d4", type: "Concussão" },
+  { name: "Foice", price: 0.2, category: "Armas", description: "Foice adaptada ao combate, com lâmina em ângulo agudo.", damage: "1d4", type: "Cortante" },
+  { name: "Lança", price: 1, category: "Armas", description: "Longa haste com ponta afiada, usada para atacar à distância ou corpo a corpo.", damage: "1d6", type: "Perfurante" },
+  { name: "Lança de Montaria", price: 10, category: "Armas", description: "Lança pesada com ponta larga, usada apenas a cavalo.", damage: "1d12", type: "Perfurante" },
+  { name: "Maça", price: 5, category: "Armas", description: "Cabo de madeira com cabeça esférica de metal.", damage: "1d6", type: "Concussão" },
+  { name: "Martelo Leve", price: 2, category: "Armas", description: "Martelo pequeno e leve, versátil em combate.", damage: "1d4", type: "Concussão" },
+  { name: "Bordão", price: 0.2, category: "Armas", description: "Bastão de madeira robusto, comum entre monges.", damage: "1d6", type: "Concussão" },
+  { name: "Machadinha", price: 5, category: "Armas", description: "Machado pequeno e leve, pode ser arremessado.", damage: "1d6", type: "Cortante" },
+  
+  // ARMAS SIMPLES - À DISTÂNCIA
+  { name: "Arco Curto", price: 25, category: "Armas", description: "Arco de madeira simples com alcance de até 24m.", damage: "1d6", type: "Perfurante" },
+  { name: "Besta Leve", price: 25, category: "Armas", description: "Mecanismo de mola que dispara parafusos, poderosa à distância.", damage: "1d8", type: "Perfurante" },
+  { name: "Azagaia", price: 0.5, category: "Armas", description: "Lança curta e leve, pode ser arremessada.", damage: "1d6", type: "Perfurante" },
+  { name: "Funda", price: 0.01, category: "Armas", description: "Pano tecido que arremessa pedras ou bolotas.", damage: "1d4", type: "Concussão" },
+  
+  // ARMAS MARCIAIS - CORPO A CORPO
+  { name: "Espada Curta", price: 10, category: "Armas", description: "Espada versátil e rápida, ideal para combate corpo a corpo.", damage: "1d6", type: "Perfurante" },
+  { name: "Espada Longa", price: 15, category: "Armas", description: "Espada grande e pesada, a arma favorita de heróis.", damage: "1d8", type: "Cortante/Perfurante" },
+  { name: "Espada Grande", price: 50, category: "Armas", description: "Espada gigantesca de duas mãos, devastadora no combate.", damage: "2d6", type: "Cortante" },
+  { name: "Rapieira", price: 25, category: "Armas", description: "Lâmina fina e elegante, perfeita para ataques precisos.", damage: "1d8", type: "Perfurante" },
+  { name: "Cimitarra", price: 25, category: "Armas", description: "Lâmina larga e curva, ótima para cortes rápidos.", damage: "1d6", type: "Cortante" },
+  { name: "Machado de Batalha", price: 10, category: "Armas", description: "Machado de uma mão com lâmina larga e afiada.", damage: "1d8", type: "Cortante" },
+  { name: "Machado Grande", price: 30, category: "Armas", description: "Machado gigantesco de duas mãos, arma mais brutal.", damage: "1d12", type: "Cortante" },
+  { name: "Alabarda", price: 20, category: "Armas", description: "Lança com lâmina de machado na ponta, versátil e poderosa.", damage: "1d10", type: "Cortante/Perfurante" },
+  { name: "Malho", price: 10, category: "Armas", description: "Martelo grande de duas mãos com cabeça de ferro.", damage: "2d6", type: "Concussão" },
+  { name: "Mangual", price: 15, category: "Armas", description: "Cabo com bola de metal corrente, ataca de forma impredizível.", damage: "1d8", type: "Concussão" },
+  { name: "Picareta de Guerra", price: 25, category: "Armas", description: "Picareta de mineração adaptada, perfura armaduras.", damage: "1d6", type: "Perfurante" },
+  { name: "Martelo de Guerra", price: 15, category: "Armas", description: "Martelo de uma mão, versátil e confiável.", damage: "1d8", type: "Concussão" },
+  
+  // ARMAS MARCIAIS - À DISTÂNCIA
+  { name: "Arco Longo", price: 50, category: "Armas", description: "Arco grande e poderoso com alcance de até 48m.", damage: "1d8", type: "Perfurante" },
+  { name: "Besta Pesada", price: 50, category: "Armas", description: "Besta maior e mais potente que a versão leve.", damage: "1d10", type: "Perfurante" },
+  { name: "Besta de Mão", price: 75, category: "Armas", description: "Besta pequena que pode ser usada em uma só mão.", damage: "1d6", type: "Perfurante" },
+  
+  // FOCOS ARCANOS
+  { name: "Cajado Arcano", price: 5, category: "Focos Arcanos", description: "Bastão de madeira ou metal trabalhada que substitui componentes materiais de magias.", damage: "—" },
+  { name: "Varinha Arcana", price: 10, category: "Focos Arcanos", description: "Haste curta e leve, excelente para direcionar feitiços de ataque.", damage: "—" },
+  { name: "Cristal Arcano", price: 10, category: "Focos Arcanos", description: "Gema ou mineral lapidado que canaliza o poder bruto do conjurador.", damage: "—" },
+  { name: "Orbe Arcana", price: 20, category: "Focos Arcanos", description: "Esfera de vidro ou cristal que cabe na palma da mão, concentra poder mágico.", damage: "—" },
+  { name: "Bastão Arcano", price: 5, category: "Focos Arcanos", description: "Cetro curto feito de metal ou ferro, muito comum entre Bruxos.", damage: "—" },
+  { name: "Bolsa de Componentes", price: 25, category: "Focos Arcanos", description: "Bolsa de couro que contém magicamente todos os componentes pequenos para soltar magias.", damage: "—" },
+  
+  // LIVROS E ESCRITA
+  { name: "Grimório", price: 50, category: "Livros", description: "Livro sagrado do Mago com 100 páginas em branco para copiar e estudar magias.", damage: "—" },
+  { name: "Livro", price: 25, category: "Livros", description: "Livro encadernado com conhecimento variado, ótimo para pesquisa.", damage: "—" },
+  { name: "Tinta e Pena", price: 10, category: "Livros", description: "Tinta de calígrafo e caneta para registrar novas magias ou documentar eventos.", damage: "—" },
+  { name: "Folhas de Pergaminho", price: 0.1, category: "Livros", description: "Pergaminho para anotações rápidas, mapas ou pequenos textos.", damage: "—" },
+  
+  // CONSUMÍVEIS E UTILITÁRIOS MÁGICOS
+  { name: "Poção de Cura", price: 50, category: "Consumíveis", description: "Restaura 2d4+2 pontos de vida quando consumida. Indispensável para aventureiros.", damage: "2d4+2" },
+  { name: "Água Benta", price: 25, category: "Consumíveis", description: "Água sagrada que causa 1d6 dano radiante a mortos-vivos e demônios.", damage: "1d6" },
+  { name: "Fogo Alquímico", price: 50, category: "Consumíveis", description: "Frasco que quebra e incendeia causando 1d4 dano por fogo, persiste por turnos.", damage: "1d4" },
+  { name: "Ácido", price: 25, category: "Consumíveis", description: "Frasco de líquido corrosivo que causa 1d6 dano de ácido ou derrete materiais.", damage: "1d6" },
+  
+  // ILUMINAÇÃO E INVESTIGAÇÃO
+  { name: "Lanterna Olho de Boi", price: 15, category: "Iluminação", description: "Ilumina um cone de 18 metros de alcance, ideal para exploração.", damage: "—" },
+  { name: "Lanterna Simples", price: 5, category: "Iluminação", description: "Lanterna de mão que ilumina 6 metros em todas as direções.", damage: "—" },
+  { name: "Óleo de Lanterna", price: 0.1, category: "Iluminação", description: "Combustível para lanternas, dura 6 horas por frasco. Também cria poças inflamáveis.", damage: "—" },
+  { name: "Tocha", price: 0.01, category: "Iluminação", description: "Vela de madeira que ilumina 6 metros, dura 1 hora.", damage: "—" },
+  { name: "Lupa", price: 100, category: "Iluminação", description: "Dá bônus +1 para examinar objetos pequenos ou decifrar runas minúsculas.", damage: "—" },
+  
+  // KITS E FERRAMENTAS
+  { name: "Kit de Curandeiro", price: 5, category: "Kits", description: "Estabiliza companheiros caídos sem precisar de teste de Medicina.", damage: "—" },
+  { name: "Ferramentas de Ladrão", price: 25, category: "Kits", description: "Essencial para desarmar armadilhas e abrir fechaduras.", damage: "—" },
+  { name: "Kit de Escalada", price: 25, category: "Kits", description: "Contém corda, pitons e equipamento necessário para escaladas seguras.", damage: "—" },
+  { name: "Kit de Herbalismo", price: 5, category: "Kits", description: "Contém ervas, lâminas e frascos para preparar poções e venenos.", damage: "—" },
+  { name: "Kit de Disfarce", price: 25, category: "Kits", description: "Roupas, maquiagem e acessórios para se disfarçar de outra pessoa.", damage: "—" },
+  { name: "Ferramentas de Artesão", price: 10, category: "Kits", description: "Ferramentas especializadas para criar objetos de madeira, metal ou couro.", damage: "—" },
+  { name: "Símbolo Sagrado", price: 5, category: "Kits", description: "Amuleto sagrado que substitui componentes materiais de magias divinas para Clérigos.", damage: "—" },
+  { name: "Instrumento Musical", price: 2, category: "Kits", description: "Instrumento que foca a magia do Bardo e amplifica suas performances.", damage: "—" },
+  
+  // AVENTURA E CAMPING
+  { name: "Mochila", price: 2, category: "Aventura", description: "Mochila de viagem para carregar equipamentos, comporta 15 itens.", damage: "—" },
+  { name: "Saco de Dormir", price: 1, category: "Aventura", description: "Saco acolchoado para dormir em segurança durante acampamentos.", damage: "—" },
+  { name: "Corda de Cânhamo (15 m)", price: 1, category: "Aventura", description: "Corda resistente de 15 metros, suporta até 300 kg.", damage: "—" },
+  { name: "Rações (1 dia)", price: 0.5, category: "Aventura", description: "Rações secas que alimentam uma pessoa por um dia." , damage: "—" },
+  { name: "Cantil", price: 0.2, category: "Aventura", description: "Recipiente para água ou bebidas, comporta 1 litro.", damage: "—" },
+  { name: "Pederneira", price: 0.5, category: "Aventura", description: "Pederneira e aço para acender fogo em 1 minuto.", damage: "—" },
+  { name: "Pé de Cabra", price: 2, category: "Aventura", description: "Ferramenta que facilita abrir caixas, portas e outros objetos.", damage: "—" },
+  { name: "Cobertor", price: 0.5, category: "Aventura", description: "Cobertor de lã para se aquecer durante acampamentos.", damage: "—" },
+  { name: "Estacas de Madeira", price: 0.05, category: "Aventura", description: "10 estacas de madeira afiadas para acampar ou defesa.", damage: "—" },
+  
+  // ROUPAS
+  { name: "Roupas Comuns", price: 0.5, category: "Roupas", description: "Roupas simples do dia a dia, apropriadas para viajantes.", damage: "—" },
+  { name: "Roupas de Viajante", price: 2, category: "Roupas", description: "Roupas reforçadas apropriadas para aventuras e viagens.", damage: "—" },
+  { name: "Roupas Finas", price: 15, category: "Roupas", description: "Roupas elegantes e bem-acabadas, apropriadas para nobres.", damage: "—" },
+  { name: "Disfarce", price: 1, category: "Roupas", description: "Roupas e acessórios para se passar por alguém diferente.", damage: "—" },
+  
+  // DIVERSOS
+  { name: "Pé de Cabra", price: 2, category: "Diversos", description: "Ferramenta de metal para abrir fechaduras e forçar portas.", damage: "—" },
+  { name: "Anel de Sinete", price: 5, category: "Diversos", description: "Anel sigilo de uma família nobre para autenticar documentos.", damage: "—" },
+  { name: "Dados", price: 0.1, category: "Diversos", description: "Dados de 20 faces para sortes, apuestas ou rolagens de mesa.", damage: "—" },
+  { name: "Pequena Faca", price: 0.2, category: "Diversos", description: "Faca de bolso útil para diversas tarefas.", damage: "—" },
+  { name: "Armadilha de Caça", price: 5, category: "Diversos", description: "Armadilha para capturar pequenos animais vivos.", damage: "—" },
+  { name: "Pá", price: 2, category: "Diversos", description: "Pá de metal para cavar, útil em explorações.", damage: "—" },
+];
+
 const equipmentPacks = [
   ["Pacote de Artista", 40, "Mochila, saco de dormir, duas fantasias, velas, rações, cantil e kit de disfarce."],
   ["Pacote de Diplomata", 39, "Baú, caixas para mapas, roupas finas, tinta, pena, lâmpada, óleo, papel, perfume, parafina e sabão."],
@@ -761,103 +861,7 @@ const equipmentPacks = [
   ["Pacote de Explorador", 10, "Mochila, saco de dormir, kit de refeição, caixa de fogo, tochas, rações, cantil e 15 m de corda."],
   ["Pacote de Sacerdote", 19, "Mochila, cobertor, velas, caixa de fogo, caixa de esmolas, incenso, incensário, vestes, rações e cantil."],
 ].map(([name, price, detail]) => ({ name, price, detail }));
-const spells = [
-  {
-    name: "Luz",
-    level: 0,
-    school: "Evocação",
-    damage: "—",
-    detail:
-      "Um objeto passa a emitir luz intensa em uma área próxima por até uma hora.",
-  },
-  {
-    name: "Mãos Mágicas",
-    level: 0,
-    school: "Conjuração",
-    damage: "—",
-    detail:
-      "Uma mão espectral manipula objetos leves, abre recipientes e entrega itens à distância.",
-  },
-  {
-    name: "Raio de Gelo",
-    level: 0,
-    school: "Evocação",
-    damage: "1d8 frio",
-    detail:
-      "Projétil gelado atinge uma criatura, causa dano de frio e reduz seu deslocamento brevemente.",
-  },
-  {
-    name: "Toque Chocante",
-    level: 0,
-    school: "Evocação",
-    damage: "1d8 elétrico",
-    detail:
-      "Eletricidade percorre o alvo em alcance corpo a corpo e impede reações até o próximo turno.",
-  },
-  {
-    name: "Prestidigitação",
-    level: 0,
-    school: "Transmutação",
-    damage: "—",
-    detail:
-      "Pequenos efeitos mágicos alteram sons, aromas, marcas e objetos por alguns instantes.",
-  },
-  {
-    name: "Mísseis Mágicos",
-    level: 1,
-    school: "Evocação",
-    damage: "3d4 + 3 força",
-    detail:
-      "Projéteis de energia atingem alvos escolhidos e não dependem de uma jogada de ataque.",
-  },
-  {
-    name: "Curar Ferimentos",
-    level: 1,
-    school: "Evocação",
-    damage: "1d8 + mod. cura",
-    detail: "Energia vital restaura pontos de vida de uma criatura tocada.",
-  },
-  {
-    name: "Escudo",
-    level: 1,
-    school: "Abjuração",
-    damage: "—",
-    detail:
-      "Uma barreira instantânea aumenta sua defesa e bloqueia mísseis mágicos até seu próximo turno.",
-  },
-  {
-    name: "Mãos Flamejantes",
-    level: 1,
-    school: "Evocação",
-    damage: "3d6 fogo",
-    detail:
-      "Uma onda de chamas se espalha em cone; criaturas fazem resistência de Destreza.",
-  },
-  {
-    name: "Sono",
-    level: 1,
-    school: "Encantamento",
-    damage: "—",
-    detail:
-      "Energia sonífera afeta criaturas em uma área começando pelas que têm menos vitalidade.",
-  },
-  {
-    name: "Imobilizar Pessoa",
-    level: 2,
-    school: "Encantamento",
-    damage: "—",
-    detail:
-      "Uma criatura humanoide faz resistência de Sabedoria ou fica paralisada enquanto mantiver a condição.",
-  },
-  {
-    name: "Invisibilidade",
-    level: 2,
-    school: "Ilusão",
-    damage: "—",
-    detail:
-      "O alvo desaparece até atacar, conjurar magia ou perder a concentração.",
-  },
-];
+const spells = spellData;
 const steps = [
   ["conceito", "Conceito", ScrollText],
   ["raca", "Raça", Users],
@@ -865,6 +869,7 @@ const steps = [
   ["subclasse", "Subclasse", Shield],
   ["magias", "Magias e Truques", Sparkles],
   ["antecedente", "Antecedente", BookOpen],
+  ["idiomas", "Idioma", Languages],
   ["atributos", "Atributos", Dices],
   ["pericias", "Pericias", Target],
   ["talentos", "Talentos", Sparkles],
@@ -875,6 +880,58 @@ const steps = [
   ["revisao", "Ficha 5e", ClipboardCheck],
 ];
 const pointCosts = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
+const languageCatalog = [
+  { id: "comum", label: "Comum", group: "Padrão" },
+  { id: "anão", label: "Anão", group: "Padrão" },
+  { id: "elfico", label: "Élfico", group: "Padrão" },
+  { id: "gnomico", label: "Gnômico", group: "Padrão" },
+  { id: "halfling", label: "Halfling", group: "Padrão" },
+  { id: "dracônico", label: "Dracônico", group: "Padrão" },
+  { id: "orc", label: "Orc", group: "Padrão" },
+  { id: "celestial", label: "Celestial", group: "Exótico" },
+  { id: "abyssal", label: "Abyssal", group: "Exótico" },
+  { id: "infernal", label: "Infernal", group: "Exótico" },
+  { id: "primordial", label: "Primordial", group: "Exótico" },
+  { id: "silvestre", label: "Silvestre", group: "Exótico" },
+  { id: "subterrâneo", label: "Subterrâneo", group: "Exótico" },
+  { id: "profundo", label: "Profundo", group: "Secreto" },
+  { id: "telepatico", label: "Telepático", group: "Secreto" },
+  { id: "cantor-dos-ladinos", label: "Canto dos Ladinos", group: "Secreto" },
+  { id: "druidico", label: "Druídico", group: "Secreto" },
+];
+const raceLanguages = {
+  humano: "comum",
+  elfo: "elfico",
+  "alto-elfo": "elfico",
+  "elfo-da-floresta": "elfico",
+  drow: "elfico",
+  anao: "anão",
+  "anao-da-colina": "anão",
+  "anao-da-montanha": "anão",
+  halfling: "halfling",
+  "halfling-pes-leves": "halfling",
+  "halfling-robusto": "halfling",
+  draconato: "dracônico",
+  gnomo: "gnomico",
+  "gnomo-da-floresta": "gnomico",
+  "gnomo-das-rochas": "gnomico",
+  "meio-elfo": "comum",
+  "meio-orc": "orc",
+  tiefling: "infernal",
+  aasimar: "celestial",
+  goblin: "goblin",
+  bugbear: "goblin",
+  kobold: "dracônico",
+  "homem-lagarto": "dracônico",
+  tabaxi: "tabaxi",
+  tortle: "aquático",
+  firbolg: "silvestre",
+  genasi: "primordial",
+  golias: "comum",
+  kenku: "aurano",
+  tritao: "aquático",
+  "yuan-ti": "abyssal",
+};
 const featLevels = [4, 8, 12, 16, 19];
 const racialBonuses = {
   humano: {
@@ -935,6 +992,7 @@ const freshCharacter = () => ({
   gold: 0,
   goldRolled: false,
   goldRoll: null,
+  languages: [],
   combat: { ac: 10, hp: 0, speed: 9 },
   spells: [],
   personality: { traits: "", ideals: "", bonds: "", flaws: "" },
@@ -959,16 +1017,718 @@ const englishSchoolNames = {
   Transmutation: "Transmutação",
 };
 const spellNameTranslations = {
-  "Acid Splash": "Borrifo Ácido", "Aid": "Auxílio", "Alarm": "Alarme", "Alter Self": "Alterar-se", "Animal Friendship": "Amizade Animal", "Animal Messenger": "Mensageiro Animal", "Animal Shapes": "Formas Animais", "Animate Dead": "Animar Mortos", "Animate Objects": "Animar Objetos", "Antilife Shell": "Concha Antivida", "Antimagic Field": "Campo Antimagia", "Antipathy/Sympathy": "Antipatia/Simpatia", "Arcane Eye": "Olho Arcano", "Arcane Hand": "Mão de Bigby", "Arcane Lock": "Tranca Arcana", "Astral Projection": "Projeção Astral", "Augury": "Augúrio", "Awaken": "Despertar", "Bane": "Perdição", "Banishment": "Banimento", "Barkskin": "Pele de Árvore", "Beacon of Hope": "Farol de Esperança", "Bestow Curse": "Amaldiçoar", "Black Tentacles": "Tentáculos Negros de Evard", "Blade Barrier": "Barreira de Lâminas", "Bless": "Abençoar", "Blight": "Definhar", "Blindness/Deafness": "Cegueira/Surdez", "Blink": "Piscar", "Blur": "Reflexos", "Branding Smite": "Marca da Punição", "Burning Hands": "Mãos Flamejantes", "Call Lightning": "Convocar Relâmpagos", "Calm Emotions": "Acalmar Emoções", "Chain Lightning": "Corrente de Relâmpagos", "Charm Person": "Enfeitiçar Pessoa", "Chill Touch": "Toque Arrepiante", "Circle of Death": "Círculo da Morte", "Clairvoyance": "Clarividência", "Clone": "Clone", "Cloudkill": "Névoa Mortal", "Color Spray": "Leque de Cores", "Command": "Comando", "Commune": "Comunhão", "Commune with Nature": "Comunhão com a Natureza", "Comprehend Languages": "Compreender Idiomas", "Compulsion": "Compulsão", "Cone of Cold": "Cone de Frio", "Confusion": "Confusão", "Conjure Animals": "Conjurar Animais", "Conjure Celestial": "Conjurar Celestial", "Conjure Elemental": "Conjurar Elemental", "Conjure Fey": "Conjurar Fadas", "Conjure Minor Elementals": "Conjurar Elementais Menores", "Conjure Woodland Beings": "Conjurar Seres da Floresta", "Contact Other Plane": "Contactar Outro Plano", "Contagion": "Contágio", "Contingency": "Contingência", "Continual Flame": "Chama Contínua", "Control Water": "Controlar a Água", "Control Weather": "Controlar o Clima", "Counterspell": "Contra-feitiço", "Create Food and Water": "Criar Alimentos e Água", "Create Undead": "Criar Mortos-Vivos", "Cure Wounds": "Curar Ferimentos", "Dancing Lights": "Globos de Luz", "Darkness": "Escuridão", "Darkvision": "Visão no Escuro", "Daylight": "Luz do Dia", "Death Ward": "Proteção contra a Morte", "Delayed Blast Fireball": "Bola de Fogo Controlável", "Demiplane": "Semiplano", "Detect Evil and Good": "Detectar o Bem e o Mal", "Detect Magic": "Detectar Magia", "Detect Poison and Disease": "Detectar Venenos e Doenças", "Detect Thoughts": "Detectar Pensamentos", "Dimension Door": "Porta Dimensional", "Disguise Self": "Disfarçar-se", "Disintegrate": "Desintegrar", "Dispel Evil and Good": "Dissipar o Bem e o Mal", "Dispel Magic": "Dissipar Magia", "Divination": "Adivinhação", "Divine Favor": "Favor Divino", "Divine Word": "Palavra Divina", "Dominate Beast": "Dominar Fera", "Dominate Monster": "Dominar Monstro", "Dominate Person": "Dominar Pessoa", "Dream": "Sonho", "Druidcraft": "Druidismo", "Earthquake": "Terremoto", "Eldritch Blast": "Explosão Mística", "Enhance Ability": "Aprimorar Habilidade", "Enlarge/Reduce": "Aumentar/Reduzir", "Entangle": "Emaranhar", "Enthrall": "Cativar", "Etherealness": "Eteridade", "Expeditious Retreat": "Recuo Acelerado", "Eyebite": "Olhar Penetrante", "Fabricate": "Fabricar", "Faerie Fire": "Fogo Fátuo", "Faithful Hound": "Cão Fiel de Mordenkainen", "False Life": "Vitalidade Falsa", "Fear": "Medo", "Feather Fall": "Queda Suave", "Feeblemind": "Enfraquecer Mente", "Find Familiar": "Convocar Familiar", "Find Steed": "Encontrar Montaria", "Find Traps": "Encontrar Armadilhas", "Finger of Death": "Dedos da Morte", "Fire Bolt": "Raio de Fogo", "Fire Shield": "Escudo de Fogo", "Fire Storm": "Tempestade de Fogo", "Fireball": "Bola de Fogo", "Flame Blade": "Lâmina Flamejante", "Flame Strike": "Golpe de Chamas", "Flaming Sphere": "Esfera Flamejante", "Flesh to Stone": "Carne para Pedra", "Fly": "Voo", "Fog Cloud": "Névoa", "Forcecage": "Gaiola de Força", "Foresight": "Previsão", "Freedom of Movement": "Liberdade de Movimento", "Freezing Sphere": "Esfera Congelante de Otiluke", "Gaseous Form": "Forma Gasosa", "Gate": "Portal", "Geas": "Missão", "Gentle Repose": "Repouso Tranquilo", "Giant Insect": "Inseto Gigante", "Glibness": "Lábia", "Globe of Invulnerability": "Globo de Invulnerabilidade", "Glyph of Warding": "Glifo de Proteção", "Goodberry": "Bom Fruto", "Grease": "Graxa", "Greater Invisibility": "Invisibilidade Maior", "Greater Restoration": "Restauração Maior", "Guardian of Faith": "Guardião da Fé", "Guards and Wards": "Guardas e Proteções", "Guidance": "Orientação", "Guiding Bolt": "Raio Guia", "Gust of Wind": "Lufada de Vento", "Hallow": "Santificar", "Hallucinatory Terrain": "Terreno Alucinatório", "Harm": "Dano", "Haste": "Velocidade", "Heal": "Cura", "Healing Word": "Palavra de Cura", "Heat Metal": "Esquentar Metal", "Hellish Rebuke": "Repreensão Infernal", "Heroes' Feast": "Banquete dos Heróis", "Heroism": "Heroísmo", "Hideous Laughter": "Riso Hilariante de Tasha", "Hold Monster": "Imobilizar Monstro", "Hold Person": "Imobilizar Pessoa", "Holy Aura": "Aura Sagrada", "Hunter's Mark": "Marca do Caçador", "Hypnotic Pattern": "Padrão Hipnótico", "Ice Storm": "Tempestade de Gelo", "Identify": "Identificar", "Illusory Script": "Escrita Ilusória", "Imprisonment": "Aprisionamento", "Incendiary Cloud": "Nuvem Incendiária", "Inflict Wounds": "Infligir Ferimentos", "Insect Plague": "Praga de Insetos", "Invisibility": "Invisibilidade", "Jump": "Salto", "Knock": "Arrombar", "Legend Lore": "Conhecimento Lendário", "Lesser Restoration": "Restauração Menor", "Levitate": "Levitação", "Lightning Bolt": "Relâmpago", "Locate Creature": "Localizar Criatura", "Locate Object": "Localizar Objeto", "Longstrider": "Passos Longos", "Mage Armor": "Armadura Arcana", "Mage Hand": "Mão de Mago", "Magic Circle": "Círculo Mágico", "Magic Jar": "Recipiente Arcano", "Magic Missile": "Mísseis Mágicos", "Magic Mouth": "Boca Mágica", "Magic Weapon": "Arma Mágica", "Magnificent Mansion": "Mansão Magnífica de Mordenkainen", "Major Image": "Imagem Maior", "Mass Cure Wounds": "Cura Completa em Massa", "Mass Heal": "Cura Completa", "Mass Healing Word": "Palavra de Cura em Massa", "Mass Suggestion": "Sugestão em Massa", "Maze": "Labirinto", "Mending": "Consertar", "Message": "Mensagem", "Meteor Swarm": "Chuva de Meteoros", "Mind Blank": "Limpar a Mente", "Minor Illusion": "Ilusão Menor", "Mirage Arcane": "Miragem Arcana", "Mirror Image": "Imagem Espelho", "Misty Step": "Passo Nebuloso", "Modify Memory": "Modificar Memória", "Moonbeam": "Raio Lunar", "Move Earth": "Mover Terra", "Nondetection": "Não-detecção", "Pass without Trace": "Passos Sem Pegadas", "Passwall": "Muralha de Passagem", "Phantasmal Killer": "Assassino Fantasmagórico", "Phantom Steed": "Montaria Fantasmagórica", "Planar Ally": "Aliado Planar", "Planar Binding": "Âncora Planar", "Plane Shift": "Deslocamento Planar", "Plant Growth": "Crescer Plantas", "Poison Spray": "Rajada de Veneno", "Polymorph": "Polimorfo", "Power Word Kill": "Palavra de Poder Matar", "Power Word Stun": "Palavra de Poder Atordoar", "Prayer of Healing": "Oração de Cura", "Prestidigitation": "Prestidigitação", "Prismatic Spray": "Borrifo Prismático", "Prismatic Wall": "Muralha Prismática", "Produce Flame": "Criar Chamas", "Programmed Illusion": "Ilusão Programada", "Project Image": "Projetar Imagem", "Protection from Energy": "Proteção contra Energia", "Protection from Evil and Good": "Proteção contra o Bem e o Mal", "Protection from Poison": "Proteção contra Veneno", "Purify Food and Drink": "Purificar Alimentos e Bebidas", "Raise Dead": "Reviver os Mortos", "Ray of Enfeeblement": "Raio do Enfraquecimento", "Ray of Frost": "Raio de Gelo", "Regenerate": "Regeneração", "Reincarnate": "Reencarnação", "Remove Curse": "Remover Maldição", "Resilient Sphere": "Esfera Resiliente de Otiluke", "Resistance": "Resistência", "Resurrection": "Ressurreição", "Reverse Gravity": "Inverter a Gravidade", "Revive": "Reviver", "Revivify": "Reviver os Mortos", "Rope Trick": "Truque de Corda", "Sacred Flame": "Chama Sagrada", "Sanctuary": "Santuário", "Scorching Ray": "Raio Ardente", "Scrying": "Vidência", "Secret Chest": "Arca Secreta de Leomund", "See Invisibility": "Ver o Invisível", "Sending": "Enviar Mensagem", "Sequester": "Sequestro", "Shapechange": "Alterar Forma", "Shatter": "Despedaçar", "Shield": "Escudo", "Shield of Faith": "Escudo da Fé", "Shillelagh": "Bordão", "Shocking Grasp": "Toque Chocante", "Silence": "Silêncio", "Silent Image": "Imagem Silenciosa", "Simulacrum": "Simulacro", "Sleep": "Sono", "Sleet Storm": "Nevasca", "Slow": "Lentidão", "Spare the Dying": "Poupar os Moribundos", "Speak with Animals": "Falar com Animais", "Speak with Dead": "Falar com os Mortos", "Speak with Plants": "Falar com Plantas", "Spider Climb": "Patas de Aranha", "Spike Growth": "Crescer Espinhos", "Spirit Guardians": "Guardiões Espirituais", "Spiritual Weapon": "Arma Espiritual", "Stinking Cloud": "Nuvem Fedorenta", "Stone Shape": "Moldar Rochas", "Stoneskin": "Pele de Pedra", "Storm of Vengeance": "Tempestade da Vingança", "Suggestion": "Sugestão", "Sunbeam": "Raio Solar", "Sunburst": "Explosão Solar", "Symbol": "Símbolo", "Telekinesis": "Telecinesia", "Telepathic Bond": "Vínculo Telepático de Rary", "Teleport": "Teletransporte", "Teleportation Circle": "Círculo de Teletransporte", "Thaumaturgy": "Taumaturgia", "Thunderwave": "Onda de Choque", "Time Stop": "Parar o Tempo", "Tiny Hut": "Cabana Pequena de Leomund", "Tongues": "Línguas", "Transport via Plants": "Transporte por Plantas", "Tree Stride": "Teletransporte por Árvores", "True Polymorph": "Metamorfose Verdadeira", "True Resurrection": "Ressurreição Verdadeira", "True Seeing": "Visão Verdadeira", "True Strike": "Ataque Certeiro", "Unseen Servant": "Servo Invisível", "Vampiric Touch": "Toque Vampírico", "Vicious Mockery": "Zombaria Viciosa", "Wall of Fire": "Muralha de Fogo", "Wall of Force": "Muro de Força", "Wall of Ice": "Muro de Gelo", "Wall of Stone": "Muro de Pedra", "Wall of Thorns": "Muralha de Espinhos", "Warding Bond": "Vínculo de Proteção", "Water Breathing": "Respirar na Água", "Water Walk": "Andar na Água", "Web": "Teia", "Weird": "Pesadelo", "Wind Walk": "Caminhar pelo Vento", "Wind Wall": "Muro de Vento", "Wish": "Desejo", "Word of Recall": "Palavra de Recordação", "Zone of Truth": "Zona de Verdade"
+  "Acid Arrow": "Flecha Ácida",
+  "Acid Splash": "Borrifo Ácido",
+  "Aid": "Auxílio",
+  "Alarm": "Alarme",
+  "Alter Self": "Alterar-se",
+  "Animal Friendship": "Amizade Animal",
+  "Animal Messenger": "Mensageiro Animal",
+  "Animal Shapes": "Formas Animais",
+  "Animate Dead": "Animar Mortos",
+  "Animate Objects": "Animar Objetos",
+  "Antilife Shell": "Concha Antivida",
+  "Antimagic Field": "Campo Antimagia",
+  "Antipathy/Sympathy": "Antipatia/Simpatia",
+  "Arcane Eye": "Olho Arcano",
+  "Arcane Hand": "Mão de Bigby",
+  "Arcane Lock": "Tranca Arcana",
+  "Arcane Sword": "Espada Arcana",
+  "Arcanist's Magic Aura": "Aura Mágica do Arcanista",
+  "Astral Projection": "Projeção Astral",
+  "Augury": "Augúrio",
+  "Awaken": "Despertar",
+  "Bane": "Perdição",
+  "Banishment": "Banimento",
+  "Barkskin": "Pele de Árvore",
+  "Beacon of Hope": "Farol de Esperança",
+  "Bestow Curse": "Amaldiçoar",
+  "Black Tentacles": "Tentáculos Negros de Evard",
+  "Blade Barrier": "Barreira de Lâminas",
+  "Bless": "Abençoar",
+  "Blight": "Definhar",
+  "Blindness/Deafness": "Cegueira/Surdez",
+  "Blink": "Piscar",
+  "Blur": "Reflexos",
+  "Branding Smite": "Marca da Punição",
+  "Burning Hands": "Mãos Flamejantes",
+  "Call Lightning": "Convocar Relâmpagos",
+  "Calm Emotions": "Acalmar Emoções",
+  "Chain Lightning": "Corrente de Relâmpagos",
+  "Charm Person": "Enfeitiçar Pessoa",
+  "Chill Touch": "Toque Arrepiante",
+  "Circle of Death": "Círculo da Morte",
+  "Clairvoyance": "Clarividência",
+  "Clone": "Clone",
+  "Cloudkill": "Névoa Mortal",
+  "Color Spray": "Leque de Cores",
+  "Command": "Comando",
+  "Commune": "Comunhão",
+  "Commune With Nature": "Comunhão com a Natureza",
+  "Commune with Nature": "Comunhão com a Natureza",
+  "Comprehend Languages": "Compreender Idiomas",
+  "Compulsion": "Compulsão",
+  "Cone of Cold": "Cone de Frio",
+  "Confusion": "Confusão",
+  "Conjure Animals": "Conjurar Animais",
+  "Conjure Celestial": "Conjurar Celestial",
+  "Conjure Elemental": "Conjurar Elemental",
+  "Conjure Fey": "Conjurar Fadas",
+  "Conjure Minor Elementals": "Conjurar Elementais Menores",
+  "Conjure Woodland Beings": "Conjurar Seres da Floresta",
+  "Contact Other Plane": "Contactar Outro Plano",
+  "Contagion": "Contágio",
+  "Contingency": "Contingência",
+  "Continual Flame": "Chama Contínua",
+  "Create or Destroy Water": "Criar ou Destruir Água",
+  "Creation": "Criação",
+  "Find the Path": "Encontrar o Caminho",
+  "Floating Disk": "Disco Flutuante",
+  "Forbiddance": "Proibição",
+  "Instant Summons": "Convocação Instantânea",
+  "Irresistible Dance": "Dança Irresistível",
+  "Light": "Luz",
+  "Locate Animals or Plants": "Localizar Animais ou Plantas",
+  "Meld Into Stone": "Fundir-se na Pedra",
+  "Mislead": "Iludir",
+  "Pass Without Trace": "Passar sem Rastro",
+  "Private Sanctum": "Santuário Particular",
+  "Protection From Energy": "Proteção contra Energia",
+  "Seeming": "Semblante",
+  "Wish": "Desejo",
+  "Word of Recall": "Palavra de Recordação",
+  "Zone of Truth": "Zona de Verdade",
+  "Fire Bolt": "Raio de Fogo",
+  "Mage Hand": "Mão Mágica",
+  "Ray of Frost": "Raio de Gelo",
+  "Shocking Grasp": "Toque Chocante",
+  "Prestidigitation": "Prestidigitação",
+  "Minor Illusion": "Ilusão Menor",
+  "True Strike": "Ataque Verdadeiro",
+  "Blade Ward": "Guardião de Lâmina",
+  "Friends": "Amigos",
+  "Guidance": "Orientação",
+  "Resistance": "Resistência",
+  "Mending": "Reparar",
+  "Message": "Mensagem",
+  "Dancing Lights": "Luzes Dançantes",
+  "Sacred Flame": "Chama Sagrada",
+  "Thaumaturgy": "Taumaturgia",
+  "Poison Spray": "Spray de Veneno",
+  "Produce Flame": "Produzir Chamas",
+  "Shape Water": "Moldar Água",
+  "Gust": "Rajada",
+  "Spare the Dying": "Poupar os Moribundos",
+  "Vicious Mockery": "Zombaria Cruel",
+  "Hex": "Maldição",
+  "Vampiric Touch": "Toque Vampírico",
+  "Sleet Storm": "Tempestade de Granizo",
+  "Wall of Stone": "Parede de Pedra",
+  "Heat Metal": "Calor do Metal",
+  "Melf's Acid Arrow": "Flecha Ácida de Melf",
+  "Magic Missile": "Mísseis Mágicos",
+  "Magic Weapon": "Arma Mágica",
+  "Dispel Magic": "Dispersar Magia",
+  "Counterspell": "Contra-magia",
+  "Fireball": "Bola de Fogo",
+  "Fly": "Voo",
+  "Hold Person": "Segurar Pessoa",
+  "Greater Invisibility": "Invisibilidade Maior",
+  "Dimension Door": "Porta Dimensional",
+  "Web": "Teia",
+  "Silvery Barbs": "Barbas Prateadas",
+  "Control Water": "Controlar Água",
+  "Create Food and Water": "Criar Comida e Água",
+  "Fire Shield": "Escudo de Fogo",
+  "Water Walk": "Andar na Água",
+  "Plant Growth": "Crescimento de Plantas",
+  "Wall of Fire": "Parede de Fogo",
+  "Wall of Ice": "Parede de Gelo",
+  "Wall of Force": "Parede de Força",
+  "Water Breathing": "Respiração Aquática",
+  "Reverse Gravity": "Inverter a Gravidade",
+  "Greater Invisibility": "Invisibilidade Maior",
+  "Stoneskin": "Pele de Pedra",
+  "Cone of Cold": "Cone de Frio",
+  "Darkness": "Trevas",
+  "Daylight": "Luz do Dia",
+  "Detect Magic": "Detectar Magia",
+  "Dispel Magic": "Dissipar Magia",
+  "Guardian of Faith": "Guardião da Fé",
+  "Holy Weapon": "Arma Sagrada",
+  "Spirit Guardians": "Guardiões Espirituais",
+  "Summon Beast": "Convocar Besta",
+  "Summon Fey": "Convocar Fadas",
+  "Summon Undead": "Convocar Mortos-Vivos",
+};
+const normalizeSpellName = (name = "") =>
+  String(name)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toLowerCase();
+const spellNameWordTranslations = {
+  acid: "ácido",
+  arrow: "flecha",
+  splash: "salpico",
+  aid: "auxílio",
+  alarm: "alarme",
+  alter: "alterar",
+  self: "si mesmo",
+  animal: "animal",
+  friendship: "amizade",
+  messenger: "mensageiro",
+  shapes: "formas",
+  animate: "animar",
+  dead: "mortos",
+  objects: "objetos",
+  antilife: "antivida",
+  shell: "concha",
+  antimagic: "antimagia",
+  field: "campo",
+  antipathy: "antipatia",
+  sympathy: "simpatia",
+  arcane: "arcano",
+  eye: "olho",
+  hand: "mão",
+  lock: "tranca",
+  sword: "espada",
+  aura: "aura",
+  astral: "astral",
+  projection: "projeção",
+  augury: "augúrio",
+  awaken: "despertar",
+  bane: "perdição",
+  banishment: "banimento",
+  barkskin: "pele de árvore",
+  beacon: "farol",
+  hope: "esperança",
+  bestow: "outorgar",
+  curse: "maldição",
+  black: "negro",
+  tentacles: "tentáculos",
+  blade: "lâmina",
+  barrier: "barreira",
+  bless: "abençoar",
+  blight: "apodrecimento",
+  blindness: "cegueira",
+  deafness: "surdez",
+  blink: "piscar",
+  blur: "reflexos",
+  branding: "marca",
+  smite: "punição",
+  burning: "chamas",
+  call: "convocar",
+  lightning: "relâmpagos",
+  calm: "acalmar",
+  emotions: "emoções",
+  chain: "corrente",
+  charm: "encantar",
+  person: "pessoa",
+  chill: "gelado",
+  touch: "toque",
+  circle: "círculo",
+  clairvoyance: "clarividência",
+  cloudkill: "névoa mortal",
+  color: "cor",
+  spray: "spray",
+  command: "comando",
+  commune: "comunhão",
+  with: "com",
+  nature: "natureza",
+  comprehend: "compreender",
+  languages: "idiomas",
+  compulsion: "compulsão",
+  cone: "cone",
+  cold: "frio",
+  confusion: "confusão",
+  conjure: "conjurar",
+  celestial: "celestial",
+  elemental: "elemental",
+  fey: "fada",
+  minor: "menor",
+  elementals: "elementais",
+  woodland: "florestal",
+  beings: "seres",
+  contact: "contato",
+  other: "outro",
+  plane: "plano",
+  contagion: "contágio",
+  contingency: "contingência",
+  continual: "contínua",
+  flame: "chama",
+  create: "criar",
+  destroy: "destruir",
+  water: "água",
+  creation: "criação",
+  find: "encontrar",
+  path: "caminho",
+  floating: "flutuante",
+  disk: "disco",
+  forbiddance: "proibição",
+  instant: "instantânea",
+  summons: "convocação",
+  irresistible: "irresistível",
+  dance: "dança",
+  light: "luz",
+  locate: "localizar",
+  meld: "fundir",
+  into: "em",
+  stone: "pedra",
+  mislead: "iludir",
+  pass: "passar",
+  trace: "rastro",
+  private: "particular",
+  sanctum: "santuário",
+  protection: "proteção",
+  from: "contra",
+  energy: "energia",
+  seeming: "semblante",
+  wish: "desejo",
+  recall: "recordação",
+  truth: "verdade",
+  bolt: "raio",
+  frost: "gelo",
+  grasp: "agarra",
+  magic: "mágica",
+  missile: "mísseis",
+  weapon: "arma",
+  dispel: "dissipar",
+  counter: "contra",
+  fire: "fogo",
+  ball: "bola",
+  fly: "voo",
+  hold: "segurar",
+  greater: "maior",
+  invisibility: "invisibilidade",
+  dimension: "dimensional",
+  door: "porta",
+  web: "teia",
+  silvery: "prateadas",
+  barbs: "barbas",
+  control: "controlar",
+  weather: "clima",
+  undying: "não-morto",
+  undead: "mortos-vivos",
+  cure: "curar",
+  wounds: "ferimentos",
+  darkness: "trevas",
+  darkvision: "visão no escuro",
+  daylight: "luz do dia",
+  ward: "proteção",
+  death: "morte",
+  delayed: "adiada",
+  blast: "explosão",
+  demiplane: "semiplano",
+  detect: "detectar",
+  evil: "mal",
+  good: "bem",
+  poison: "veneno",
+  disease: "doença",
+  thoughts: "pensamentos",
+  disguise: "disfarçar",
+  disintegrate: "desintegrar",
+  reveal: "revelar",
+  divine: "divino",
+  favor: "favor",
+  word: "palavra",
+  dominate: "dominar",
+  beast: "besta",
+  monster: "monstro",
+  dream: "sonho",
+  druidcraft: "magia druidica",
+  earthquake: "terremoto",
+  eldritch: "etéreo",
+  enhance: "melhorar",
+  ability: "habilidade",
+  enlarge: "aumentar",
+  reduce: "reduzir",
+  entangle: "emaranhar",
+  enthrall: "encantar",
+  etherealness: "etéreo",
+  expeditious: "expedita",
+  retreat: "retirada",
+  eyebite: "mordida ocular",
+  fabricate: "fabricar",
+  faerie: "feérico",
+  faithful: "fiel",
+  hound: "cão",
+  false: "falsa",
+  life: "vida",
+  fear: "medo",
+  feather: "pena",
+  fall: "queda",
+  feeblemind: "mente fraca",
+  familiar: "familiar",
+  steed: "montaria",
+  traps: "armadilhas",
+  finger: "dedos",
+  shield: "escudo",
+  storm: "tempestade",
+  flame: "chama",
+  blade: "lâmina",
+  strike: "impacto",
+  flaming: "chama",
+  sphere: "esfera",
+  flesh: "carne",
+  to: "para",
+  fog: "névoa",
+  cloud: "nuvem",
+  forcecage: "jaula de força",
+  foresight: "previsão",
+  freedom: "liberdade",
+  movement: "movimento",
+  freezing: "gelada",
+  gaseous: "gasoso",
+  gate: "portal",
+  geas: "geas",
+  gentle: "gentil",
+  repose: "repouso",
+  giant: "gigante",
+  insect: "inseto",
+  glibness: "fluência",
+  globe: "globo",
+  invulnerability: "inviolabilidade",
+  glyph: "glifo",
+  warding: "guardião",
+  goodberry: "boa baga",
+  grease: "graxa",
+  restoration: "restauração",
+  guardian: "guardião",
+  guards: "guarda",
+  guiding: "guiado",
+  gust: "rajada",
+  hallow: "consagrar",
+  hallucinatory: "alucinatório",
+  terrain: "terreno",
+  harm: "dano",
+  haste: "aceleração",
+  heal: "cura",
+  healing: "cura",
+  hellish: "infernal",
+  rebuke: "repreensão",
+  heroes: "heróis",
+  feast: "banquete",
+  heroism: "heroísmo",
+  hideous: "horrível",
+  laughter: "riso",
+  monster: "monstro",
+  holy: "santo",
+  aura: "aura",
+  hunter: "caçador",
+  mark: "marca",
+  hypnotic: "hipnótico",
+  pattern: "padrão",
+  ice: "gelo",
+  identify: "identificar",
+  script: "escrita",
+  imprisonment: "prisão",
+  incendiary: "incendiário",
+  cloud: "nuvem",
+  inflict: "infligir",
+  insect: "inseto",
+  plague: "praga",
+  jump: "salto",
+  knock: "abrir",
+  legend: "lenda",
+  lore: "conhecimento",
+  levitate: "levitar",
+  lightning: "relâmpago",
+  locate: "localizar",
+  creature: "criatura",
+  object: "objeto",
+  longstrider: "passo longo",
+  armor: "armadura",
+  circle: "círculo",
+  jar: "jarro",
+  mouth: "boca",
+  mansion: "mansão",
+  image: "imagem",
+  mass: "múltipla",
+  maze: "labirinto",
+  meteor: "meteoro",
+  swarm: "nuvem",
+  mind: "mente",
+  blank: "vazia",
+  mirage: "miragem",
+  mirror: "espelho",
+  misty: "névoa",
+  step: "passo",
+  modify: "modificar",
+  memory: "memória",
+  moonbeam: "raio lunar",
+  move: "mover",
+  earth: "terra",
+  nondetection: "não detecção",
+  passwall: "passagem na parede",
+  phantasmal: "fantasmagórico",
+  killer: "assassino",
+  phantom: "fantasma",
+  steed: "cavalo",
+  planar: "planar",
+  ally: "aliado",
+  binding: "ligação",
+  shift: "mudança",
+  plant: "planta",
+  growth: "crescimento",
+  polymorph: "polimorfia",
+  power: "poder",
+  word: "palavra",
+  kill: "matar",
+  stun: "atordoar",
+  prayer: "oração",
+  healing: "cura",
+  prismatic: "prismático",
+  spray: "spray",
+  wall: "parede",
+  programmed: "programada",
+  illusion: "ilusão",
+  project: "projetar",
+  protection: "proteção",
+  evil: "mal",
+  good: "bem",
+  from: "contra",
+  poison: "veneno",
+  purify: "purificar",
+  drink: "bebida",
+  raise: "ressuscitar",
+  dead: "mortos",
+  ray: "raio",
+  enfeeblement: "enfraquecimento",
+  regenerate: "regenerar",
+  reincarnate: "reencarnar",
+  remove: "remover",
+  resilient: "resistente",
+  sphere: "esfera",
+  resurrection: "ressurreição",
+  reverse: "inverter",
+  gravity: "gravidade",
+  revivify: "reviver",
+  rope: "corda",
+  trick: "truque",
+  sanctuary: "refúgio",
+  scorching: "abrasador",
+  scrying: "adivinhação",
+  secret: "segredo",
+  chest: "baú",
+  see: "ver",
+  unseen: "invisível",
+  servant: "servo",
+  wall: "parede",
+  force: "força",
+  ice: "gelo",
+  thorns: "espinhos",
+  warding: "guardião",
+  bond: "vínculo",
+  breathing: "respiração",
+  walk: "andar",
+  weird: "estranho",
+  wind: "vento",
+  thorns: "espinhos",
+  control: "controlar",
+  water: "água",
+  create: "criar",
+  food: "comida",
+  and: "e",
+  walk: "andar",
+  plant: "planta",
+  growth: "crescimento",
+  shield: "escudo",
+  force: "força",
+  breathing: "respiração",
+  wall: "parede",
+  ice: "gelo",
+  fire: "fogo",
+  earth: "terra",
+  darkness: "trevas",
+  daylight: "luz do dia",
+  magic: "mágica",
+  detect: "detectar",
+  summon: "convocar",
+  undead: "mortos-vivos",
+  guards: "guarda",
+  guardians: "guardiões",
+  blessing: "abençoamento",
+  spirit: "espírito",
+  spirits: "espíritos",
+  guardian: "guardião",
+  faith: "fé",
+  holy: "santo",
+  weapon: "arma",
+  reverse: "inverter",
+  gravity: "gravidade",
+};
+const translateEnglishSpellName = (name = "") => {
+  const cleaned = String(name).trim().replace(/[’']/g, " ").replace(/[-/]/g, " ");
+  if (!cleaned) return "";
+  const words = cleaned.split(/\s+/).filter(Boolean).map((word) => {
+    const lower = word.toLowerCase().replace(/[^a-z]/g, "");
+    return spellNameWordTranslations[lower] ?? word;
+  });
+  const translated = words.join(" ");
+  return translated.charAt(0).toUpperCase() + translated.slice(1);
+};
+const translateSpellName = (name = "") => {
+  const key = String(name).trim();
+  if (!key) return "";
+  if (spellNameTranslations[key]) return spellNameTranslations[key];
+  const normalized = normalizeSpellName(key);
+  if (!normalized) return key;
+  const exactAlias = Object.entries(spellNameTranslations).find(([entryKey]) => normalizeSpellName(entryKey) === normalized);
+  if (exactAlias) return exactAlias[1];
+  const partialAlias = Object.entries(spellNameTranslations).find(
+    ([entryKey]) =>
+      normalizeSpellName(entryKey).includes(normalized) ||
+      normalized.includes(normalizeSpellName(entryKey)),
+  );
+  if (partialAlias) return partialAlias[1];
+  const fallbackAliases = {
+    controlwater: "Controlar Água",
+    createfoodandwater: "Criar Comida e Água",
+    fireshield: "Escudo de Fogo",
+    waterwalk: "Andar na Água",
+    plantgrowth: "Crescimento de Plantas",
+    walloffire: "Parede de Fogo",
+    wallofice: "Parede de Gelo",
+    wallofforce: "Parede de Força",
+    waterbreathing: "Respiração Aquática",
+    reversegravity: "Inverter a Gravidade",
+    greaterinvisibility: "Invisibilidade Maior",
+    stoneskin: "Pele de Pedra",
+    coneofcold: "Cone de Frio",
+    detectmagic: "Detectar Magia",
+    dispelmagic: "Dissipar Magia",
+    guardianoffaith: "Guardião da Fé",
+    holyweapon: "Arma Sagrada",
+    spiritguardians: "Guardiões Espirituais",
+    summonbeast: "Convocar Besta",
+    summonfey: "Convocar Fadas",
+    summonundead: "Convocar Mortos-Vivos",
+  };
+  if (fallbackAliases[normalized]) return fallbackAliases[normalized];
+  return translateEnglishSpellName(key);
+};
+const spellDescriptionTranslations = {
+  "Acid Arrow": "Você dispara uma flecha cintilante de ácido contra um alvo em alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo sofre 4d4 de dano de ácido imediatamente e 2d4 no fim do próximo turno dele. Em um erro, a flecha respinga ácido no alvo, causando metade do dano inicial e nenhum dano no fim do próximo turno.",
+  "Acid Splash": "Você arremessa uma bolha de ácido. Escolha uma criatura dentro do alcance, ou duas criaturas dentro do alcance que estejam a 5 pés uma da outra. Um alvo deve realizar um teste de resistência de Destreza ou sofre 1d6 de dano ácido.",
+  "Aid": "Você fortalece seus aliados com vigor e determinação. Escolha até três criaturas dentro do alcance. O máximo de pontos de vida e os pontos de vida atuais de cada alvo aumentam em 5 pela duração.",
+  "Alarm": "Você cria um alarme contra intrusão indesejada. Escolha uma porta, uma janela ou uma área em alcance que não seja maior que um cubo de 20 pés. Até a magia terminar, um alarme avisa você sempre que uma criatura Minúscula ou maior tocar ou entrar na área protegida. Quando você lança a magia, pode designar criaturas que não irão disparar o alarme. Você também escolhe se o alarme é mental ou audível.",
+  "Alter Self": "Você assume uma forma diferente. Quando você lança a magia, escolha uma das opções a seguir, cujos efeitos duram pela duração da magia. Enquanto a magia durar, você pode encerrar uma opção como ação para obter os benefícios de outra.",
+  "Animal Friendship": "Esta magia permite que você convença uma besta de que não pretende lhe fazer mal. Escolha uma besta que você possa ver dentro do alcance. Ela deve ver e ouvir você. Se a Inteligência da besta for 4 ou superior, a magia falha. Caso contrário, a besta deve realizar um teste de resistência de Sabedoria ou ficar encantada por você pela duração da magia. Se você ou um de seus aliados ferirem o alvo, a magia termina.",
+  "Animal Messenger": "Por meio desta magia, você usa um animal para entregar uma mensagem. Escolha uma besta Minúscula que você possa ver dentro do alcance, como um esquilo, um azulão ou um morcego. Você especifica um local que já tenha visitado e um destinatário que corresponda a uma descrição geral, como “um homem ou mulher vestido com o uniforme da guarda da cidade” ou “um anão ruivo usando um chapéu pontudo”. Você também fala uma mensagem com até vinte e cinco palavras. A besta alvo viaja pela duração da magia em direção ao local especificado, percorrendo cerca de 50 milhas por 24 horas se for um mensageiro voador, ou 25 milhas para outros animais.",
+  "Animal Shapes": "Sua magia transforma outros em bestas. Escolha qualquer número de criaturas dispostas que você possa ver dentro do alcance. Você transforma cada alvo na forma de uma besta Grande ou menor com nível de desafio 4 ou inferior. Nos turnos seguintes, você pode usar sua ação para transformar criaturas afetadas em novas formas.",
+  "Burning Hands": "Uma onda de chamas se espalha em cone a partir de suas mãos. Cada criatura na área deve realizar um teste de resistência de Destreza. Uma criatura sofre dano de fogo se falhar no teste e metade do dano se passar.",
+  "Charm Person": "Quando você lança esta magia, escolhe uma criatura humanoide que você possa ver dentro do alcance. Ela deve realizar um teste de resistência de Sabedoria ou ficar encantada por você pela duração. A criatura encantada não percebe que foi encantada e considera você um aliado amigável.",
+  "Fire Bolt": "Você lança um projétil de fogo em uma criatura ou objeto dentro do alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo sofre 1d10 de dano de fogo.",
+  "Mage Hand": "Uma mão espectral, flutuante, surge em um ponto dentro do alcance. A mão dura pela duração e se move de acordo com sua vontade. Pode manipular objetos leves, abrir portas ou recipientes não trancados e transportar itens para você ou para outros lugares dentro do alcance.",
+  "Mending": "Este truque corrige uma quebra, rasgo ou dano simples de um objeto que você tocar. Pode consertar objetos feitos de metal, tecido, madeira, couro ou outros materiais. Não pode reparar itens mágicos ou criaturas.",
+  "Minor Illusion": "Você cria um som ou imagem de um objeto dentro do alcance que dura pela duração. A imagem não pode conter som e não pode mudar de forma. Ela é completamente ilusória e você pode usá-la para distrair, enganar ou mascarar a verdade.",
+  "Prestidigitation": "Você cria pequenos efeitos mágicos, como acender uma vela, limpar ou sujar um objeto, criar pequenos ruídos, aromas e sinais ou alterar a aparência de uma superfície por um curto tempo.",
+  "Ray of Frost": "Você cria um raio gelado e atira em uma criatura dentro do alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo sofre 1d8 de dano de frio e seu deslocamento é reduzido pela metade até o fim do próximo turno.",
+  "Shocking Grasp": "A eletricidade corre por sua mão e provoca a destruição de um alvo. Faça um ataque corpo a corpo com magia contra a criatura. Em um acerto, o alvo sofre 1d8 de dano elétrico e não pode fazer reações até o fim do próximo turno.",
+  "True Strike": "Você refina sua mira e faz um ataque extraordinário. Na próxima vez que você fazer um ataque com arma contra uma criatura ao longo da duração, você terá vantagem no primeiro ataque e a magia acaba automaticamente quando o ataque for realizado.",
+};
+const translateSpellDescription = (spellName, description = "") => {
+  const directEntry = spellName && spellDescriptionTranslations[spellName];
+  if (directEntry) return directEntry;
+  if (!description) return "Uma magia descrita nas regras da 5e 2014.";
+
+  let text = description;
+  const replacements = [
+    [/\bYou hurl\b/gi, "Você arremessa"],
+    [/\bYou cast\b/gi, "Você lança"],
+    [/\bYou create\b/gi, "Você cria"],
+    [/\bYou assume\b/gi, "Você assume"],
+    [/\bWhen you cast the spell\b/gi, "Quando você lança a magia"],
+    [/\bWhen you cast this spell\b/gi, "Quando você lança esta magia"],
+    [/\bChoose one creature within range\b/gi, "Escolha uma criatura dentro do alcance"],
+    [/\bChoose up to three creatures within range\b/gi, "Escolha até três criaturas dentro do alcance"],
+    [/\bChoose a creature\b/gi, "Escolha uma criatura"],
+    [/\bChoose a target\b/gi, "Escolha um alvo"],
+    [/\bChoose a door, a window, or an area within range that is no larger than a 20-foot cube\./gi, "Escolha uma porta, uma janela ou uma área dentro do alcance que não tenha mais de um cubo de 20 pés."],
+    [/\bA target must succeed on a (.+?) saving throw or take /gi, "Um alvo deve realizar um teste de resistência de $1 ou sofre "],
+    [/\bmust succeed on a (.+?) saving throw or take /gi, "deve realizar um teste de resistência de $1 ou sofre "],
+    [/\bmust make a (.+?) saving throw\b/gi, "deve realizar um teste de resistência de $1"],
+    [/\bmake a (.+?) saving throw\b/gi, "realizar um teste de resistência de $1"],
+    [/\bOn a hit, the target takes /gi, "Em um acerto, o alvo sofre "],
+    [/\bOn a hit, the creature takes /gi, "Em um acerto, a criatura sofre "],
+    [/\bOn a miss, the target takes /gi, "Em um erro, o alvo sofre "],
+    [/\bOn a miss, the creature takes /gi, "Em um erro, a criatura sofre "],
+    [/\bOn a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn\./gi, "Em um erro, a flecha respinga ácido no alvo, causando metade do dano inicial e nenhum dano no fim do próximo turno."],
+    [/\bfor the duration\b/gi, "pela duração"],
+    [/\bfor the next minute\b/gi, "pela próxima rodada"],
+    [/\buntil the spell ends\b/gi, "até a magia terminar"],
+    [/\bwithin range\b/gi, "dentro do alcance"],
+    [/\bwithin the area\b/gi, "dentro da área"],
+    [/\bthe target\b/gi, "o alvo"],
+    [/\bthe creature\b/gi, "a criatura"],
+    [/\bTarget\b/gi, "Alvo"],
+    [/\btarget\b/gi, "alvo"],
+    [/\bcreature\b/gi, "criatura"],
+    [/\bcreatures\b/gi, "criaturas"],
+    [/\bobject\b/gi, "objeto"],
+    [/\bobjects\b/gi, "objetos"],
+    [/\buntil the end of its next turn\b/gi, "até o fim do próximo turno"],
+    [/\buntil the end of the next turn\b/gi, "até o fim do próximo turno"],
+    [/\bat the end of its next turn\b/gi, "no fim do próximo turno"],
+    [/\bdeals /gi, "causa "],
+    [/\bdamage\b/gi, "dano"],
+    [/\bsaving throw\b/gi, "teste de resistência"],
+    [/\bYou can use\b/gi, "Você pode usar"],
+    [/\bIf the target\b/gi, "Se o alvo"],
+    [/\bIf the creature\b/gi, "Se a criatura"],
+    [/\bWhen the spell ends\b/gi, "Quando a magia termina"],
+    [/\bBy means of this spell\b/gi, "Por meio desta magia"],
+    [/\bAt higher levels,\b/gi, "Em níveis superiores,"],
+    [/\bAt higher levels\b/gi, "Em níveis superiores"],
+    [/\bEach creature\b/gi, "Cada criatura"],
+    [/\bYou choose\b/gi, "Você escolhe"],
+    [/\bThe spell\b/gi, "A magia"],
+    [/\bThis spell\b/gi, "Esta magia"],
+    [/\bA creature\b/gi, "Uma criatura"],
+    [/\bwhile the spell lasts\b/gi, "enquanto a magia durar"],
+    [/\buntil the start of your next turn\b/gi, "até o início do seu próximo turno"],
+    [/\buntil the start of its next turn\b/gi, "até o início do próximo turno"],
+    [/\bthe next turn\b/gi, "o próximo turno"],
+    [/\bnext turn\b/gi, "próximo turno"],
+    [/\bring\b/gi, "alcance"],
+    [/\bRange\b/gi, "Alcance"],
+    [/\bBeast\b/gi, "Besta"],
+    [/\bbeast\b/gi, "besta"],
+    [/\bspell slot\b/gi, "espaço de magia"],
+    [/\bspell slots\b/gi, "espaços de magia"],
+    [/\bThe target must\b/gi, "O alvo deve"],
+    [/\bthe target must\b/gi, "o alvo deve"],
+    [/\bIf the target is\b/gi, "Se o alvo for"],
+    [/\bIf the creature is\b/gi, "Se a criatura for"],
+    [/\bYou and the target\b/gi, "Você e o alvo"],
+    [/\bA creature that you can see within range\b/gi, "Uma criatura que você possa ver dentro do alcance"],
+    [/\bA creature of your choice\b/gi, "Uma criatura à sua escolha"],
+    [/\bchoose one or more\b/gi, "escolha um ou mais"],
+    [/\bChoose one or more\b/gi, "Escolha um ou mais"],
+    [/\bThe next time you hit\b/gi, "Na próxima vez que você acertar"],
+    [/\bYou can repeat the saving throw\b/gi, "Você pode repetir o teste de resistência"],
+    [/\bWhen the spell ends\b/gi, "Quando a magia termina"],
+    [/\buntil the end of your next turn\b/gi, "até o fim do seu próximo turno"],
+    [/\buntil the end of the target's next turn\b/gi, "até o fim do próximo turno do alvo"],
+    [/\bif the target fails\b/gi, "se o alvo falhar"],
+    [/\bIf the target fails\b/gi, "Se o alvo falhar"],
+  ];
+
+  replacements.forEach(([pattern, replacement]) => {
+    text = text.replace(pattern, replacement);
+  });
+
+  return text;
 };
 const apiSpell = (spell) => ({
-  name: spellNameTranslations[spell.name] || spell.name,
+  name: translateSpellName(spell.name),
   level: spell.level,
   school: englishSchoolNames[spell.school?.name] || spell.school?.name || "Magia",
   damage: spell.damage
     ? `${spell.damage.damage_at_slot_level?.[String(spell.level)] || spell.damage.damage_at_character_level?.["1"] || "variável"} ${spell.damage.damage_type?.name?.toLowerCase() || "mágico"}`
     : "—",
-  detail: spell.desc?.[0] || "Uma magia descrita nas regras da 5e 2014.",
+  detail: translateSpellDescription(spell.name, spell.desc?.[0]),
   range: spell.range,
   castingTime: spell.casting_time,
   components: spell.components?.join(", "),
@@ -1095,7 +1855,7 @@ export default function App() {
         if (!active) return;
         const localByName = new Map(spells.map((spell) => [spell.name.toLowerCase(), spell]));
         const basic = results.map(({ name, level }) => ({
-          name: spellNameTranslations[name] || name,
+          name: translateSpellName(name),
           level,
           school: "Magia",
           damage: "—",
@@ -1345,6 +2105,10 @@ function StepContent({ step, character, update, selectedClass, combat, spellCata
       "De onde você veio",
       "Uma vida anterior deixa marcas, proficiências e recursos.",
     ],
+    idiomas: [
+      "Idiomas do personagem",
+      "Marque os idiomas que seu personagem conhece, começando pelo idioma nativo da raça ou do antecedente.",
+    ],
     atributos: [
       "O poder em você",
       "Use o point buy oficial da 5e: 27 pontos, de 8 a 15 antes dos bônus.",
@@ -1393,6 +2157,7 @@ function StepContent({ step, character, update, selectedClass, combat, spellCata
       {step === "antecedente" && (
         <ExternalBackground character={character} update={update} backgrounds={backgrounds} formatGold={formatGold} startingEquipment={startingEquipment} />
       )}
+      {step === "idiomas" && <LanguageSelection character={character} update={update} />}
       {step === "atributos" && (
         <ExternalAttributes character={character} update={update} attributes={attributes} pointCosts={pointCosts} races={races} modifier={modifier} />
       )}
@@ -1424,6 +2189,74 @@ function StepContent({ step, character, update, selectedClass, combat, spellCata
         <Review character={character} selectedClass={selectedClass} combat={combat} spellCatalog={spellCatalog} />
       )}
     </section>
+  );
+}
+function LanguageSelection({ character, update }) {
+  const nativeLanguage = raceLanguages[character.race];
+  const selected = new Set(character.languages || []);
+  
+  // Auto-select native language when component mounts or race changes
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    if (nativeLanguage && !initialized) {
+      if (!selected.has(nativeLanguage)) {
+        selected.add(nativeLanguage);
+        update({ languages: [...selected] });
+      }
+      setInitialized(true);
+    }
+  }, [nativeLanguage]);
+  
+  const toggleLanguage = (languageId) => {
+    if (languageId === nativeLanguage) return; // Cannot deselect native language
+    const next = new Set(selected);
+    if (next.has(languageId)) {
+      next.delete(languageId);
+    } else {
+      next.add(languageId);
+    }
+    update({ languages: [...next] });
+  };
+
+  return (
+    <div className="language-panel">
+      {nativeLanguage && (
+        <div className="language-group">
+          <h3>Idioma Nativo</h3>
+          <div className="language-list">
+            <label className="language-option checked" style={{ opacity: 0.8 }}>
+              <input type="checkbox" checked={true} disabled />
+              <span>{languageCatalog.find(l => l.id === nativeLanguage)?.label || nativeLanguage}</span>
+              <small>Automático da raça</small>
+            </label>
+          </div>
+        </div>
+      )}
+      {['Padrão', 'Exótico', 'Secreto'].map((group) => (
+        <div className="language-group" key={group}>
+          <h3>{group}</h3>
+          <div className="language-list">
+            {languageCatalog
+              .filter((language) => language.group === group)
+              .map((language) => (
+                <label
+                  key={language.id}
+                  className={`language-option ${selected.has(language.id) ? "checked" : ""}`}
+                  style={{ opacity: language.id === nativeLanguage ? 0.5 : 1 }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selected.has(language.id)}
+                    disabled={language.id === nativeLanguage}
+                    onChange={() => toggleLanguage(language.id)}
+                  />
+                  <span>{language.label}</span>
+                </label>
+              ))}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 function Concept({ character, update }) {
@@ -2143,6 +2976,9 @@ function Review({ character, selectedClass, combat, spellCatalog }) {
   const background = backgrounds.find(
     (item) => item.id === character.background,
   );
+  const selectedLanguages = (character.languages || ["nato"]).map(
+    (id) => languageCatalog.find((language) => language.id === id)?.label || id,
+  );
   const bonuses = racialBonuses[character.race] || {};
   const proficiency = proficiencyBonus(character.level);
   const value = (key) => character.attrs[key] + (bonuses[key] || 0);
@@ -2218,8 +3054,7 @@ function Review({ character, selectedClass, combat, spellCatalog }) {
               className="large-empty"
             >
               <p>
-                {race?.bonus ||
-                  "Preencha proficiências, idiomas e ferramentas."}
+                {selectedLanguages.length ? selectedLanguages.join(", ") : "Preencha proficiências, idiomas e ferramentas."}
               </p>
             </SheetBox>
           </aside>
