@@ -19,6 +19,23 @@ export default function Equipment({
   );
   const goldRule = startingGoldByClass[character.classId];
   const [category, setCategory] = useState("Todos");
+  const [search, setSearch] = useState("");
+  const [customItem, setCustomItem] = useState({
+    name: "",
+    price: "0",
+    quantity: "1",
+    source: "Manual",
+  });
+
+  const inventoryItems = character.equipment || [];
+  const inventoryUsed = inventoryItems.reduce(
+    (total, item) => total + Math.max(1, Number(item.quantity || 1)),
+    0
+  );
+  const hasBackpack = inventoryItems.some((item) =>
+    item.name?.toLowerCase().includes("mochila")
+  );
+  const inventoryCapacity = 15 + (hasBackpack ? 15 : 0);
 
   const rollGold = () => {
     if (character.goldRolled || !goldRule) return;
@@ -56,9 +73,42 @@ export default function Equipment({
     });
   };
 
-  const removeItem = (itemId) => {
+  const addCustomItem = () => {
+    const name = customItem.name.trim();
+    if (!name) return;
+
+    const quantity = Math.max(1, Number(customItem.quantity) || 1);
+    const price = Number(String(customItem.price).replace(",", ".")) || 0;
+    const totalPrice = goldToCents(price * quantity);
+
+    if (totalPrice > 0 && goldToCents(character.gold) < totalPrice) return;
+
     update({
-      equipment: character.equipment.filter((item) => item.id !== itemId),
+      gold: centsToGold(goldToCents(character.gold) - totalPrice),
+      equipment: [
+        ...character.equipment,
+        {
+          id: crypto.randomUUID(),
+          name,
+          quantity,
+          price,
+          source: customItem.source || "Manual",
+        },
+      ],
+    });
+
+    setCustomItem({ name: "", price: "0", quantity: "1", source: "Manual" });
+  };
+
+  const removeItem = (itemId) => {
+    const item = character.equipment.find((entry) => entry.id === itemId);
+    if (!item) return;
+
+    const refund = goldToCents((Number(item.price) || 0) * (Number(item.quantity) || 1));
+
+    update({
+      gold: centsToGold(goldToCents(character.gold) + refund),
+      equipment: character.equipment.filter((entry) => entry.id !== itemId),
     });
   };
 
@@ -76,10 +126,12 @@ export default function Equipment({
     "Diversos",
   ];
 
-  const visible =
-    category === "Todos"
-      ? itemCatalog
-      : itemCatalog.filter((item) => item.category === category);
+  const visible = (category === "Todos"
+    ? itemCatalog
+    : itemCatalog.filter((item) => item.category === category)
+  ).filter((item) =>
+    item.name.toLowerCase().includes(search.trim().toLowerCase())
+  );
 
   return (
     <div className="equipment">
@@ -116,6 +168,72 @@ export default function Equipment({
         >
           Rolagem de Ouro
         </StepButton>
+      </div>
+
+      <div className="inventory-capacity-box">
+        <div>
+          <span>Espaço de itens</span>
+          <strong>
+            {inventoryUsed} / {inventoryCapacity}
+          </strong>
+        </div>
+        <small>
+          {hasBackpack ? "Mochila inclusa: +15 espaços" : "Sem mochila: 15 espaços básicos"}
+        </small>
+      </div>
+
+      <div className="item-search-box">
+        <input
+          type="search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Pesquisar item por nome..."
+          aria-label="Pesquisar item por nome"
+        />
+      </div>
+
+      <div className="custom-item-panel">
+        <h3>Adicionar item personalizado</h3>
+        <div className="custom-item-fields">
+          <input
+            type="text"
+            value={customItem.name}
+            onChange={(event) =>
+              setCustomItem((current) => ({ ...current, name: event.target.value }))
+            }
+            placeholder="Nome do item"
+          />
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value={customItem.price}
+            onChange={(event) =>
+              setCustomItem((current) => ({ ...current, price: event.target.value }))
+            }
+            placeholder="Preço"
+          />
+          <input
+            type="number"
+            min="1"
+            value={customItem.quantity}
+            onChange={(event) =>
+              setCustomItem((current) => ({ ...current, quantity: event.target.value }))
+            }
+            placeholder="Qtd."
+          />
+          <input
+            type="text"
+            value={customItem.source}
+            onChange={(event) =>
+              setCustomItem((current) => ({ ...current, source: event.target.value }))
+            }
+            placeholder="Origem"
+          />
+          <button type="button" className="add-custom-item" onClick={addCustomItem}>
+            <Plus size={14} /> Adicionar
+          </button>
+        </div>
       </div>
 
       <div className="catalog-tools">
@@ -162,11 +280,11 @@ export default function Equipment({
         ))}
       </div>
 
-      {character.equipment.length > 0 && (
+      {inventoryItems.length > 0 && (
         <div className="equipment-list">
-          <h3>Inventário ({character.equipment.length} itens)</h3>
+          <h3>Inventário ({inventoryItems.length} itens)</h3>
           <div className="inventory-items">
-            {character.equipment.map((item) => (
+            {inventoryItems.map((item) => (
               <div key={item.id} className="inventory-item">
                 <div className="inventory-item-info">
                   <strong>{item.name}</strong>

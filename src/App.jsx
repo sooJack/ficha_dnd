@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +20,7 @@ import {
   Swords,
   Target,
   Trash2,
+  Upload,
   Users,
 } from "lucide-react";
 import { FiMinus, FiPlus } from "react-icons/fi";
@@ -997,9 +998,77 @@ const freshCharacter = () => ({
   combat: { ac: 10, hp: 0, speed: 9 },
   spells: [],
   personality: { traits: "", ideals: "", bonds: "", flaws: "" },
-  appearance: { age: "", height: "", eyes: "", hair: "", description: "" },
+  appearance: { age: "", height: "", eyes: "", hair: "", description: "", image: "" },
   story: "",
 });
+const normalizeText = (value = "") => value
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase()
+  .replace(/\s+/g, " ")
+  .trim();
+const pickKnownOption = (rawValue, options) => {
+  const value = normalizeText(rawValue || "");
+  if (!value) return "";
+  const exact = options.find((option) => normalizeText(option.name) === value || normalizeText(option.text || option.name) === value);
+  if (exact) return exact.id || exact.value || exact.name;
+  const contains = options.find((option) => {
+    const optionText = normalizeText(option.text || option.name);
+    return value.includes(optionText) || optionText.includes(value);
+  });
+  if (contains) return contains.id || contains.value || contains.name;
+  return "";
+};
+const findLabelValue = (text, labels, maxLength = 80) => {
+  const pattern = new RegExp(`(?:${labels.join("|")})\\s*[:\\-]?\\s*([A-Za-zÀ-ÖØ-Ý0-9'’ .\-/()]{1,${maxLength}})`, "iu");
+  const match = text.match(pattern);
+  if (!match) return "";
+  return match[1].replace(/\s{2,}/g, " ").trim();
+};
+const parseCharacterPdf = (rawText) => {
+  const text = rawText.replace(/\s+/g, " ").trim();
+  const normalized = normalizeText(text);
+  const name = findLabelValue(text, ["nome do personagem", "nome", "character name", "personagem"]) || "";
+  const player = findLabelValue(text, ["jogador", "player"]) || "";
+  const level = Number(findLabelValue(text, ["nivel", "level"])?.match(/(\d{1,2})/)?.[1] || 1);
+  const raceValue = findLabelValue(text, ["raça", "raca", "race"]) || "";
+  const classValue = findLabelValue(text, ["classe", "class"]) || "";
+  const backgroundValue = findLabelValue(text, ["antecedente", "background"]) || "";
+  const alignmentValue = findLabelValue(text, ["tendência", "tendencia", "alignment"]) || "";
+  const race = pickKnownOption(raceValue, [...races, ...additionalRaces]);
+  const classId = pickKnownOption(classValue, classCatalog);
+  const background = pickKnownOption(backgroundValue, backgrounds);
+  const subclassCatalogOptions = Object.entries(subclassCatalog).flatMap(([classIdKey, list]) =>
+    list.map((option) => ({ id: option.name, classId: classIdKey, name: option.name, text: option.name, value: option.name })),
+  );
+  const subclassValue = findLabelValue(text, ["subclasse", "subclass"]) || "";
+  const subclass = classId ? pickKnownOption(subclassValue || classValue, subclassCatalogOptions.filter((item) => item.classId === classId)) || "" : "";
+  const attrs = { ...freshCharacter().attrs };
+  const attrPatterns = [
+    ["forca", /(?:força|strength)\s*[:\-]?\s*(\d{1,2})/iu],
+    ["destreza", /(?:destreza|dexterity)\s*[:\-]?\s*(\d{1,2})/iu],
+    ["constituicao", /(?:constituic[ãa]o|constitution)\s*[:\-]?\s*(\d{1,2})/iu],
+    ["inteligencia", /(?:intelig[eê]ncia|intelligence)\s*[:\-]?\s*(\d{1,2})/iu],
+    ["sabedoria", /(?:sabedoria|wisdom)\s*[:\-]?\s*(\d{1,2})/iu],
+    ["carisma", /(?:carisma|charisma)\s*[:\-]?\s*(\d{1,2})/iu],
+  ];
+  attrPatterns.forEach(([key, regex]) => {
+    const match = text.match(regex);
+    if (match) attrs[key] = Number(match[1]);
+  });
+  const parsed = {
+    name: name || "",
+    player: player || "",
+    level: Number.isFinite(level) ? level : 1,
+    race,
+    classId,
+    background,
+    subclass,
+    alignment: alignmentValue || "",
+    attrs,
+  };
+  return Object.values(parsed).some((value) => typeof value === "string" ? Boolean(value) : Number.isFinite(value)) ? parsed : null;
+};
 const modifier = (value) => Math.floor((value - 10) / 2);
 const signed = (value) => (value >= 0 ? `+${value}` : value);
 const spellDamage = (damage) => {
@@ -1790,6 +1859,7 @@ export default function App() {
   const [current, setCurrent] = useState(0);
   const [landing, setLanding] = useState(true);
   const [spellCatalog, setSpellCatalog] = useState(spells);
+  const fileInputRef = useRef(null);
   useEffect(
     () => localStorage.setItem("ficha-dnd", JSON.stringify(character)),
     [character],
@@ -1851,12 +1921,46 @@ export default function App() {
     setCurrent(0);
     setLanding(false);
   };
+  const handlePdfImport = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    event.target.value = "";
+    try {
+      const pdfjsLib = await import("pdfjs-dist");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      let text = "";
+      for (let pageIndex = 1; pageIndex <= pdf.numPages; pageIndex += 1) {
+        const page = await pdf.getPage(pageIndex);
+        const pageText = await page.getTextContent();
+        text += pageText.items.map((item) => item.str).join(" ") + "\n";
+      }
+      const parsed = parseCharacterPdf(text);
+      if (!parsed) {
+        alert("Não foi possível identificar os dados da ficha no PDF enviado.");
+        return;
+      }
+      setCharacter((previous) => ({
+        ...freshCharacter(),
+        ...previous,
+        ...parsed,
+      }));
+      setCurrent(0);
+      setLanding(false);
+    } catch (error) {
+      console.error(error);
+      alert("Não foi possível ler este PDF. Tente outro arquivo ou insira os dados manualmente.");
+    }
+  };
   if (landing)
     return (
       <Landing
         hasProgress={Boolean(character.name)}
         onNew={reset}
         onContinue={() => setLanding(false)}
+        onImport={handlePdfImport}
+        fileInputRef={fileInputRef}
       />
     );
   const step = currentStep;
@@ -1937,7 +2041,7 @@ export default function App() {
     </div>
   );
 }
-function Landing({ hasProgress, onNew, onContinue }) {
+function Landing({ hasProgress, onNew, onContinue, onImport, fileInputRef }) {
   return (
     <div className="landing">
       <AmbientDecor />
@@ -2000,6 +2104,16 @@ function Landing({ hasProgress, onNew, onContinue }) {
       <div className="landing-actions">
         <Button variant="primary" icon={Swords} onClick={onNew}>
           Criar nova ficha
+        </Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          onChange={onImport}
+          style={{ display: "none" }}
+        />
+        <Button icon={Upload} onClick={() => fileInputRef?.current?.click()}>
+          Adicionar Ficha
         </Button>
         {hasProgress && (
           <Button icon={ScrollText} onClick={onContinue}>
@@ -2816,8 +2930,40 @@ function Personality({ character, update }) {
 function Appearance({ character, update }) {
   const set = (key, value) =>
     update({ appearance: { ...character.appearance, [key]: value } });
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => set("image", reader.result || "");
+    reader.readAsDataURL(file);
+  };
+
   return (
-    <div className="form-grid">
+    <div className="form-grid appearance-layout">
+      <div className="appearance-portrait-panel wide">
+        <label className="field image-upload-field">
+          <span>Imagem do personagem</span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
+        </label>
+
+        <div className="portrait-preview" aria-label="Pré-visualização da imagem do personagem">
+          {character.appearance.image ? (
+            <img src={character.appearance.image} alt="Imagem do personagem" />
+          ) : (
+            <div className="portrait-placeholder">
+              <Eye size={24} />
+              <span>Adicionar imagem 1:1</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       <Field
         label="Idade"
         value={character.appearance.age}
@@ -2959,9 +3105,18 @@ function Review({ character, selectedClass, combat, spellCatalog }) {
       <div className="sheet-preview">
       <div className="sheet-page sheet-page-one">
         <header className="sheet-banner">
-          <div>
-            <span className="sheet-kicker">Dungeons & Dragons · 5ª Edição</span>
-            <h3>{character.name || "NOME DO PERSONAGEM"}</h3>
+          <div className="sheet-banner-identity">
+            <div className="sheet-portrait-image">
+              {character.appearance?.image ? (
+                <img src={character.appearance.image} alt="Imagem do personagem" />
+              ) : (
+                <div className="sheet-portrait-placeholder">?</div>
+              )}
+            </div>
+            <div>
+              <span className="sheet-kicker">Dungeons & Dragons · 5ª Edição</span>
+              <h3>{character.name || "NOME DO PERSONAGEM"}</h3>
+            </div>
           </div>
           <div className="sheet-banner-fields">
             <SheetField
