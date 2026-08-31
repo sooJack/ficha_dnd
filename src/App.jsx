@@ -28,6 +28,7 @@ import { image } from "./data/imageNames";
 import { spells as spellData } from "./data/spells";
 import { classes as classCatalog, classProficiencies, classStartingItems, startingGoldByClass } from "./data/classes";
 import { subclasses as subclassCatalog, subclassAbilities as abilityCatalog, subclassLevels as subclassLevelData } from "./data/subclasses";
+import allSpellTranslations from "./data/allSpellTranslations.js";
 import ExternalAttributes from "./components/attributes";
 import ExternalBackground from "./components/background";
 import ExternalEquipment from "./components/equipment";
@@ -1627,99 +1628,45 @@ const spellDescriptionTranslations = {
   "Ray of Frost": "Você cria um raio gelado e atira em uma criatura dentro do alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo sofre 1d8 de dano de frio e seu deslocamento é reduzido pela metade até o fim do próximo turno.",
   "Shocking Grasp": "A eletricidade corre por sua mão e provoca a destruição de um alvo. Faça um ataque corpo a corpo com magia contra a criatura. Em um acerto, o alvo sofre 1d8 de dano elétrico e não pode fazer reações até o fim do próximo turno.",
   "True Strike": "Você refina sua mira e faz um ataque extraordinário. Na próxima vez que você fazer um ataque com arma contra uma criatura ao longo da duração, você terá vantagem no primeiro ataque e a magia acaba automaticamente quando o ataque for realizado.",
+  "Druidcraft": "Sussurrando aos espíritos da natureza, você cria um dos seguintes efeitos dentro do alcance: você cria um pequeno efeito sensorial inofensivo que prenuncia fenômeno climático dentro de 1 milha e é válido pela duração. A mudança aparece 1 minuto antes de chegar. Você faz com que uma flor brote, uma semente germine ou uma folha amadureça, instantaneamente. Você cria um efeito sensorial inofensivo instantâneo, como folhas caindo, um sopro de vento, o som de um pequeno animal ou o suave odor de um repolho.",
+  "Eldritch Blast": "Um feixe de energia cintilante dispara em direção a uma criatura dentro do alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo sofre 1d10 de dano de força. A magia cria mais de um feixe quando você atinge níveis mais altos: dois feixes no 5º nível, três feixes no 11º nível e quatro feixes no 17º nível. Você pode direcionar os feixes ao mesmo alvo ou a diferentes.",
+  "Poison Spray": "Você estende sua mão em direção a uma criatura que você pode ver dentro do alcance e projeta um jato de gás nocivo de sua palma. A criatura deve realizar um teste de resistência de Constituição ou sofre 1d12 de dano de veneno.",
+  "Produce Flame": "Uma chama tremeluzente aparece em sua mão. A chama permanece ali pela duração e não prejudica você nem seu equipamento. A chama emite luz brilhante em um raio de 3 metros e luz fraca por mais 3 metros. A magia termina se você a dispensar como ação ou se lançar novamente.",
+  "Shillelagh": "A madeira de um bordão ou de um quarterstaff que você está segurando é imbuída com o poder da natureza. Pela duração, você pode usar sua habilidade de conjuração em vez de Força para as jogadas de ataque e dano de ataques corpo a corpo usando essa arma, e o dado de dano da arma se torna d8. A arma também se torna mágica, se não o for. A magia termina se você lançá-la novamente ou se soltar a arma.",
+  "Spare the Dying": "Você toca uma criatura viva que tenha 0 pontos de vida. A criatura se torna estável. Esta magia não tem efeito em mortos-vivos ou constructos.",
+  "Bless": "Você abençoa até três criaturas de sua escolha dentro do alcance. Sempre que um alvo fizer uma jogada de ataque ou um teste de resistência antes de a magia terminar, o alvo pode rolar um d4 e adicionar o número obtido à jogada de ataque ou teste de resistência.",
+  "Color Spray": "Uma série deslumbrante de luzes coloridas cintilantes surge de sua mão. Role 6d10; o total é quantos pontos de vida de criaturas esta magia pode afetar. Criaturas em um cone de 4,5 metros originando de você são afetadas em ordem crescente de seus pontos de vida atuais (ignorando criaturas inconscientes e criaturas que não conseguem ver).",
+  "Detect Good and Evil": "Pela duração, você sabe se há uma aberração, celestial, elemental, fada, fiend ou morto-vivo a 9 metros de você, bem como onde uma criatura está localizada. De maneira similar, você sabe se há um local ou objeto a 9 metros de você que foi magicamente consagrado ou profanado.",
+  "Disguise Self": "Você faz com que você - incluindo suas roupas, armadura, armas e outros pertences em sua pessoa - pareça diferente até a magia terminar ou até você usar sua ação para dispensá-la. Você pode parecer 30 centímetros mais baixo ou mais alto e pode aparecer fino, gordo ou entre os dois. Você não pode mudar seu tipo de corpo, então deve adotar uma forma que tenha o mesmo arranjo básico de membros. Caso contrário, a extensão da ilusão depende de você.",
+  "Divine Favor": "Sua oração o fortalece com radiance divina. Até a magia terminar, seus ataques com armas causam 1d4 de dano radiante adicional em um acerto.",
+  "Entangle": "Ervas e vinhas agarradoras brotam do solo em um quadrado de 6 metros começando em um ponto dentro do alcance. Pela duração, essas plantas transformam o solo na área em terreno difícil.",
+  "Find Familiar": "Você ganha o serviço de um familiar, um espírito que assume uma forma animal de sua escolha: morcego, gato, caranguejo, sapo (sapo), falcão, lagarto, polvo, coruja, cobra venenosa, peixe (peixe-agulha), rato, corvo, cavalo-marinho, aranha ou doninha. Aparecendo em um espaço desocupado dentro do alcance, o familiar tem as estatísticas da forma escolhida, embora seja um celestial, fada ou fiend (sua escolha) em vez de uma besta.",
+  "Longstrider": "Você toca uma criatura. A velocidade do alvo aumenta em 3 metros até a magia terminar.",
+  "Mage Armor": "Você toca uma criatura disposta que não está usando armadura, e uma força mágica protetora a rodeia até a magia terminar. A CA base do alvo se torna 13 + seu modificador de Destreza. A magia termina se o alvo usar armadura ou se você dispensar a magia como ação.",
+  "Protection from Good and Evil": "Até a magia terminar, uma criatura disposta que você toque é protegida contra certos tipos de criaturas: aberrações, celestiais, elementais, fadas, fiends e mortos-vivos.",
+  "Purify Food and Drink": "Todo alimento e bebida não mágica dentro de uma esfera de 1,5 metro de raio centrada em um ponto de sua escolha dentro do alcance é purificado e tornado livre de veneno e doença.",
+  "Sanctuary": "Você protege uma criatura dentro do alcance contra ataque. Até a magia terminar, qualquer criatura que ataque a criatura protegida ou lance um feitiço prejudicial nela deve primeiro realizar um teste de resistência de Sabedoria. Em um teste falho, a criatura deve escolher um novo alvo ou perder o ataque ou feitiço. Esta magia não protege a criatura protegida de efeitos de área, como a explosão de uma bola de fogo.",
+  "Shield of Faith": "Um campo cintilante aparece e rodeia uma criatura de sua escolha dentro do alcance, concedendo-lhe um bônus +2 à CA pela duração.",
+  "Silent Image": "Você cria a imagem de um objeto, uma criatura ou algum outro fenômeno visível que não seja maior que um cubo de 4,5 metros. A imagem aparece em um local dentro do alcance e dura pela duração. A imagem é puramente visual; não é acompanhada por som, cheiro ou outros efeitos sensoriais.",
+  "Sleep": "Esta magia envia criaturas para um sono mágico. Role 5d8; o total é quantos pontos de vida de criaturas esta magia pode afetar. Criaturas a 6 metros de um ponto que você escolheu dentro do alcance são afetadas em ordem crescente de seus pontos de vida atuais (ignorando criaturas inconscientes).",
+  "Speak with Animals": "Você ganha a habilidade de compreender e se comunicar verbalmente com bestas pela duração. O conhecimento e a consciência de muitas bestas são limitados por sua inteligência, mas no mínimo, as bestas podem fornecer informações sobre locais próximos e monstros, incluindo tudo o que podem perceber ou perceberam no dia anterior. Você pode ser capaz de persuadir uma besta a fazer um pequeno favor para você, a critério do GM.",
+  "Nystul's Magic Aura": "Você coloca uma ilusão em uma criatura ou objeto que toca para que feitiços de adivinhação revelem informações falsas sobre ela. O alvo pode ser uma criatura disposta ou um objeto que não está sendo carregado ou usado por outra criatura.",
+  "Find Steed": "Você invoca um espírito que assume a forma de um cavalomontaria extraordinariamente inteligente, forte e leal, criando um vínculo duradouro com ele. Aparecendo em um espaço desocupado dentro do alcance, a montaria assume a forma que você escolher, como um cavalo de guerra, um pônei, um camelo, um alce ou um mastim. A montaria tem as estatísticas da forma escolhida, embora seja um celestial, fada ou fiend (sua escolha) em vez de seu tipo normal.",
+  "Knock": "Escolha um objeto que você possa ver dentro do alcance. O objeto pode ser uma porta, uma caixa, um baú, um par de algemas, um cadeado ou outro objeto que contenha um meio mundano ou mágico que impeça o acesso.",
+  "Magic Mouth": "Você planta uma mensagem para um objeto no alcance da magia. A mensagem é verbalizada quando as condições de acionamento são atendidas. Escolha um objeto que você veja e que não seja usado ou carregado por outra criatura. Depois diga a mensagem, que não deve exceder 25 palavras, mas ouvir pode levar até 10 minutos. Finalmente, estabeleça as circunstâncias que acionam a magia para entregar sua mensagem.",
+  "Mirror Image": "Três duplicatas ilusórias de você aparecem em seu espaço. Até a magia terminar, as duplicatas se movem com você e imitam suas ações, mudando de posição para que seja impossível rastrear qual imagem é real. Você pode usar sua ação para dispensar as duplicatas ilusórias.",
+  "Misty Step": "Brevemente cercado por neblina prateada, você se teletransporta até 9 metros para um espaço desocupado que você possa ver.",
+  "Pass Without Trace": "Um véu de sombras e silêncio irradia de você, mascarando você e seus companheiros da detecção. Pela duração, cada criatura que você escolher a 9 metros de você (incluindo você) tem bônus +10 em testes de Destreza (Furtividade) e não pode ser rastreada exceto por meios mágicos. Uma criatura que recebe este bônus não deixa rastros ou outros sinais de sua passagem.",
+  "Prayer of Healing": "Até seis criaturas de sua escolha que você possa ver dentro do alcance recuperam pontos de vida iguais a 2d8 + seu modificador de habilidade de conjuração. Esta magia não tem efeito em mortos-vivos ou constructos.",
+  "Ray of Enfeeblement": "Um raio preto de energia enervante salta de seu dedo em direção a uma criatura dentro do alcance. Faça um ataque à distância com magia contra o alvo. Em um acerto, o alvo causa apenas metade do dano com ataques com armas que usam Força até a magia terminar.",
+  "Rope Trick": "Você toca um comprimento de corda que tem até 18 metros. Uma extremidade da corda então sobe para o ar até toda a corda ficar perpendicular ao chão. Na extremidade superior da corda, uma entrada invisível se abre para um espaço extradimensional que dura até a magia terminar.",
+  "Scorching Ray": "Você cria três raios de fogo e os arremessa em alvos dentro do alcance. Você pode arremessá-los em um alvo ou em vários.",
 };
 const translateSpellDescription = (spellName, description = "") => {
-  const directEntry = spellName && spellDescriptionTranslations[spellName];
-  if (directEntry) return directEntry;
-  if (!description) return "Uma magia descrita nas regras da 5e 2014.";
-
-  let text = description;
-  const replacements = [
-    [/\bYou hurl\b/gi, "Você arremessa"],
-    [/\bYou cast\b/gi, "Você lança"],
-    [/\bYou create\b/gi, "Você cria"],
-    [/\bYou assume\b/gi, "Você assume"],
-    [/\bWhen you cast the spell\b/gi, "Quando você lança a magia"],
-    [/\bWhen you cast this spell\b/gi, "Quando você lança esta magia"],
-    [/\bChoose one creature within range\b/gi, "Escolha uma criatura dentro do alcance"],
-    [/\bChoose up to three creatures within range\b/gi, "Escolha até três criaturas dentro do alcance"],
-    [/\bChoose a creature\b/gi, "Escolha uma criatura"],
-    [/\bChoose a target\b/gi, "Escolha um alvo"],
-    [/\bChoose a door, a window, or an area within range that is no larger than a 20-foot cube\./gi, "Escolha uma porta, uma janela ou uma área dentro do alcance que não tenha mais de um cubo de 20 pés."],
-    [/\bA target must succeed on a (.+?) saving throw or take /gi, "Um alvo deve realizar um teste de resistência de $1 ou sofre "],
-    [/\bmust succeed on a (.+?) saving throw or take /gi, "deve realizar um teste de resistência de $1 ou sofre "],
-    [/\bmust make a (.+?) saving throw\b/gi, "deve realizar um teste de resistência de $1"],
-    [/\bmake a (.+?) saving throw\b/gi, "realizar um teste de resistência de $1"],
-    [/\bOn a hit, the target takes /gi, "Em um acerto, o alvo sofre "],
-    [/\bOn a hit, the creature takes /gi, "Em um acerto, a criatura sofre "],
-    [/\bOn a miss, the target takes /gi, "Em um erro, o alvo sofre "],
-    [/\bOn a miss, the creature takes /gi, "Em um erro, a criatura sofre "],
-    [/\bOn a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn\./gi, "Em um erro, a flecha respinga ácido no alvo, causando metade do dano inicial e nenhum dano no fim do próximo turno."],
-    [/\bfor the duration\b/gi, "pela duração"],
-    [/\bfor the next minute\b/gi, "pela próxima rodada"],
-    [/\buntil the spell ends\b/gi, "até a magia terminar"],
-    [/\bwithin range\b/gi, "dentro do alcance"],
-    [/\bwithin the area\b/gi, "dentro da área"],
-    [/\bthe target\b/gi, "o alvo"],
-    [/\bthe creature\b/gi, "a criatura"],
-    [/\bTarget\b/gi, "Alvo"],
-    [/\btarget\b/gi, "alvo"],
-    [/\bcreature\b/gi, "criatura"],
-    [/\bcreatures\b/gi, "criaturas"],
-    [/\bobject\b/gi, "objeto"],
-    [/\bobjects\b/gi, "objetos"],
-    [/\buntil the end of its next turn\b/gi, "até o fim do próximo turno"],
-    [/\buntil the end of the next turn\b/gi, "até o fim do próximo turno"],
-    [/\bat the end of its next turn\b/gi, "no fim do próximo turno"],
-    [/\bdeals /gi, "causa "],
-    [/\bdamage\b/gi, "dano"],
-    [/\bsaving throw\b/gi, "teste de resistência"],
-    [/\bYou can use\b/gi, "Você pode usar"],
-    [/\bIf the target\b/gi, "Se o alvo"],
-    [/\bIf the creature\b/gi, "Se a criatura"],
-    [/\bWhen the spell ends\b/gi, "Quando a magia termina"],
-    [/\bBy means of this spell\b/gi, "Por meio desta magia"],
-    [/\bAt higher levels,\b/gi, "Em níveis superiores,"],
-    [/\bAt higher levels\b/gi, "Em níveis superiores"],
-    [/\bEach creature\b/gi, "Cada criatura"],
-    [/\bYou choose\b/gi, "Você escolhe"],
-    [/\bThe spell\b/gi, "A magia"],
-    [/\bThis spell\b/gi, "Esta magia"],
-    [/\bA creature\b/gi, "Uma criatura"],
-    [/\bwhile the spell lasts\b/gi, "enquanto a magia durar"],
-    [/\buntil the start of your next turn\b/gi, "até o início do seu próximo turno"],
-    [/\buntil the start of its next turn\b/gi, "até o início do próximo turno"],
-    [/\bthe next turn\b/gi, "o próximo turno"],
-    [/\bnext turn\b/gi, "próximo turno"],
-    [/\bring\b/gi, "alcance"],
-    [/\bRange\b/gi, "Alcance"],
-    [/\bBeast\b/gi, "Besta"],
-    [/\bbeast\b/gi, "besta"],
-    [/\bspell slot\b/gi, "espaço de magia"],
-    [/\bspell slots\b/gi, "espaços de magia"],
-    [/\bThe target must\b/gi, "O alvo deve"],
-    [/\bthe target must\b/gi, "o alvo deve"],
-    [/\bIf the target is\b/gi, "Se o alvo for"],
-    [/\bIf the creature is\b/gi, "Se a criatura for"],
-    [/\bYou and the target\b/gi, "Você e o alvo"],
-    [/\bA creature that you can see within range\b/gi, "Uma criatura que você possa ver dentro do alcance"],
-    [/\bA creature of your choice\b/gi, "Uma criatura à sua escolha"],
-    [/\bchoose one or more\b/gi, "escolha um ou mais"],
-    [/\bChoose one or more\b/gi, "Escolha um ou mais"],
-    [/\bThe next time you hit\b/gi, "Na próxima vez que você acertar"],
-    [/\bYou can repeat the saving throw\b/gi, "Você pode repetir o teste de resistência"],
-    [/\bWhen the spell ends\b/gi, "Quando a magia termina"],
-    [/\buntil the end of your next turn\b/gi, "até o fim do seu próximo turno"],
-    [/\buntil the end of the target's next turn\b/gi, "até o fim do próximo turno do alvo"],
-    [/\bif the target fails\b/gi, "se o alvo falhar"],
-    [/\bIf the target fails\b/gi, "Se o alvo falhar"],
-  ];
-
-  replacements.forEach(([pattern, replacement]) => {
-    text = text.replace(pattern, replacement);
-  });
-
-  return text;
+  if (spellName && allSpellTranslations[spellName]) {
+    return allSpellTranslations[spellName];
+  }
+  return description || "Uma magia descrita nas regras da 5e 2014.";
 };
 const apiSpell = (spell) => ({
   name: translateSpellName(spell.name),
